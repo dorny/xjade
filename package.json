@@ -1,0 +1,70 @@
+{
+  "name": "xjade",
+
+  "version": "0.0.1",
+
+  "description": "XJade template engine",
+
+  "keywords": [
+    "html",
+    "dom",
+    "template",
+    "engine",
+    "jade",
+    "haml"
+  ],
+
+  "bugs": "https://github.com/dorny/xjade/issues",
+
+  "license": "MIT",
+
+  "author": {
+    "name": "Michal Dorner",
+    "email": "dorner.michal@gmail.com"
+  },
+
+  "files": [
+    "bin/xjade.js",
+    "lib/compilers/ast.js",
+    "lib/compilers/html.js",
+    "lib/compilers/javascript.js",
+    "lib/parser/source.js",
+    "lib/parser/template.js",
+    "lib/config.js",
+    "lib/utils.js",
+    "lib/xjade.js",
+    "LICENSE.md",
+    "README.md",
+    "package.json"
+  ],
+
+  "main": "./lib/xjade.js",
+
+  "bin": {
+    "xjade": "./bin/xjade.js"
+  },
+
+  "repository": {
+    "type": "git",
+    "url":  "http://github.com/dorny/xjade.git"
+  },
+
+  "dependencies": {
+    "lodash": "2.4.x",
+    "commander": "2.2.x",
+    "html": "0.0.7",
+    "xmldom": "0.1.x"
+  },
+
+  "devDependencies": {
+    "typescript": "0.9.7",
+    "grunt": "0.4.x",
+    "grunt-contrib-clean": "0.4.x",
+    "grunt-contrib-watch": "0.4.x",
+    "grunt-ts": "1.9.x",
+    "pegjs": "0.8.x",
+    "grunt-shell": "0.3.x"
+  },
+
+  "readmeFilename": "Readme.md"
+}
