@@ -1,7 +1,7 @@
 {
   "name": "xjade",
 
-  "version": "0.0.1",
+  "version": "0.0.2",
 
   "description": "XJade template engine",
 
@@ -49,6 +49,10 @@
     "url":  "http://github.com/dorny/xjade.git"
   },
 
+  "scripts": {
+    "test": "node_modules/jasmine-node/bin/jasmine-node spec"
+  },
+
   "dependencies": {
     "lodash": "2.4.x",
     "commander": "2.2.x",
@@ -63,7 +67,8 @@
     "grunt-contrib-watch": "0.4.x",
     "grunt-ts": "1.9.x",
     "pegjs": "0.8.x",
-    "grunt-shell": "0.3.x"
+    "grunt-shell": "0.3.x",
+    "jasmine-node": "1.14.x"
   },
 
   "readmeFilename": "Readme.md"
