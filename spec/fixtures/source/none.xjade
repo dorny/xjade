@@ -1,0 +1,17 @@
+/**
+    Content here should not be changed during compilation
+*/
+
+// some comment
+
+var str = "some string";
+
+function someFunction(){
+
+}
+
+var template = someFunction();
+template();
+
+template = 1;
+var val = template * 2;

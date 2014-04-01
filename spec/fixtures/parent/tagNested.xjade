@@ -1,0 +1,6 @@
+exports.render = template*(root) {
+    #div-1
+        #div-1-1
+            #div-1-1-1
+    #div-2
+}
