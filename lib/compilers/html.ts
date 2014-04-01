@@ -80,14 +80,11 @@ class CompilerHTML {
 
     private require(filename) {
 
-        if (path.extname(filename) === '') {
-            filename = filename+'.xjade';
-        }
+        var ext = path.extname(filename);
 
-        var absolute = path.resolve(this.currentFile, filename);
-        var relative = path.relative(process.cwd(), absolute)
-
-        if (fs.existsSync(relative)) {
+        if (ext==='js-tpl' || ext==='ts-tpl') {
+            var absolute = path.resolve(this.currentFile, filename);
+            var relative = path.relative(process.cwd(), absolute);
             return this.processTemplate(relative);
         }
         else {
