@@ -1,0 +1,11 @@
+exports.render = function template*(root) {
+
+    - if (true) {
+        "OK"
+    - }
+    - else {
+        "FAIL"
+    - }
+}
+
+

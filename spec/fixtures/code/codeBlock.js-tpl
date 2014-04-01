@@ -1,0 +1,7 @@
+exports.render = function template*(root) {
+
+    {
+        return "OK"
+    }
+
+}
