@@ -1,0 +1,3 @@
+exports.render = function template*(root) {
+    //> single line HTML comment
+}

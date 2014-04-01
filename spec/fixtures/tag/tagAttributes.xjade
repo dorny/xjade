@@ -1,3 +1,0 @@
-exports.render = template*(root) {
-    input[id="some-id" class="class" name="name" value="value" @short="short" data-long="long"]
-}

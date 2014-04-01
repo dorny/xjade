@@ -1,0 +1,5 @@
+exports.render = function template*(root) {
+    /*>
+        Multiline comment
+    */
+}

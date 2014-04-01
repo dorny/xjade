@@ -4,12 +4,12 @@ var utils = require('./specUtils');
 var xjade = require('../lib/xjade');
 
 var document = utils.createDocument();
-var fixture = function(name){ return path.join(__dirname,'fixtures','parent',name); };
+var fixture = function(name){ return path.join(__dirname,'fixtures','parent',name+'.js-tpl'); };
 
 describe('Parent Tags', function(){
 
     it('tag body', function(){
-        var fn = eval(xjade.compile(fixture('tagBody.xjade'), {compile: 'js'}));
+        var fn = eval(xjade.compile(fixture('tagBody'), {compile: 'js'}));
         var root = document.createDocumentFragment();
         fn(root);
         var div = root.firstChild;
@@ -17,7 +17,7 @@ describe('Parent Tags', function(){
     });
 
     it('nested tags', function(){
-        var fn = eval(xjade.compile(fixture('tagNested.xjade'), {compile: 'js'}));
+        var fn = eval(xjade.compile(fixture('tagNested'), {compile: 'js'}));
         var root = document.createDocumentFragment();
         fn(root);
         expect(root.childNodes.length).toEqual(2);

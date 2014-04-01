@@ -1,0 +1,3 @@
+exports.render = function template*(root, id, name) {
+    div[ id={id} data-name={name} ]
+}

@@ -1,5 +1,0 @@
-exports.render = template*(root) {
-    /*
-        Multiline comment
-    */
-}

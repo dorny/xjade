@@ -1,0 +1,11 @@
+/*
+    some source
+*/
+
+var anonymous = function template* (root) { }
+
+// som code
+
+function template* nammed(root) { }
+
+// some code
