@@ -25,26 +25,11 @@ class Compiler implements XJadeCompiler {
     lastPrintedLineOffset;
 
     EL_TOKEN = '__el$';
+    INDENT_TOKEN = '  ';
 
     public compile(filename: string, opts: XJadeOptions) : string {
         this.opts = opts;
-
-        var template;
-        // try {
-            template = opts.readFile(filename);
-        /*} catch(e) {
-            throw {
-                e.filename = filename;
-            }
-            new Error(
-                'Unable to read file "'
-                + path.relative(this.root, filename)
-                + '" included in "'
-                + path.relative(this.root, this.currentFile)
-                +'"'
-            );
-        }*/
-
+        var template = opts.readFile(filename);
         var nodes = parserSource.parse(template);
         nodes.forEach((node)=> this.compileNode(node, null));
         return this.buffer.join('');
@@ -64,7 +49,7 @@ class Compiler implements XJadeCompiler {
     private makeIndent() {
         var space = '';
         for(var i=0; i<this.indent; i++) {
-            space += '  ';
+            space += this.INDENT_TOKEN;
         }
 
         return space;
@@ -144,9 +129,9 @@ class Compiler implements XJadeCompiler {
         }
 
         this.append('function '+(node.name||'')+'('+node.args.value+') {');
-        this.append('var el;');
+        this.append(this.INDENT_TOKEN+'var el;');
         this.compileChildren(nodes, el);
-        this.append('}');
+        this.buffer.push('}');
     }
 
     private compileCode(node: XJadeNode, parent: string) {
@@ -172,8 +157,9 @@ class Compiler implements XJadeCompiler {
 
         tag.attributes.forEach((attr)=>{
             var name = attr.name.toLowerCase();
-            if (config.directAttrs.indexOf(name)!=-1) {
-                this.append(el+'.'+name+' = '+ this.escapeValue(attr.value)+';');
+
+            if (name in config.directAttrs) {
+                this.append(el+'.'+config.directAttrs[name]+' = '+ this.escapeValue(attr.value)+';');
             }
             else {
                 this.append(el+'.setAttribute(' + q(name)+', ' +  this.escapeValue(attr.value) + ');');

@@ -15,5 +15,11 @@ var config = {
 		'mobile': '<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">'
 	},
 
-	directAttrs: ['id','name','value','checked']
+	directAttrs: {
+		id: 'id',
+		class: 'className',
+		name: 'name',
+		value:'value',
+		checked: 'checked',
+	}
 };
