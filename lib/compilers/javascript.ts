@@ -102,7 +102,7 @@ class Compiler implements XJadeCompiler {
         this.buffer.push(node.value);
     }
 
-    private compileTemplate(node: XJadeNode) {
+    private compileTemplate(node: XJadeTemplateNode) {
         var m = node.args.value.match(/^([a-zA-Z$_][a-zA-Z0-9$_]*)/);
         if (m===null) {
             throw {
@@ -128,7 +128,7 @@ class Compiler implements XJadeCompiler {
             throw e;
         }
 
-        this.append('function '+(node.name||'')+'('+node.args.value+') {');
+        this.append(node.prefix+' '+(node.name||'')+'('+node.args.value+') {');
         this.append(this.INDENT_TOKEN+'var el;');
         this.compileChildren(nodes, el);
         this.buffer.push('}');
@@ -136,11 +136,6 @@ class Compiler implements XJadeCompiler {
 
     private compileCode(node: XJadeNode, parent: string) {
         this.append(node.value);
-        if (node.children && node.children.length > 0) {
-            this.append('{');
-            this.compileChildren(node.children, parent);
-            this.append('}');
-        }
     }
 
     private compileTag(tag: XJadeTagNode, parent: string) {

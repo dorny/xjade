@@ -20,14 +20,17 @@ interface XJadeNode {
 	type: string;
 	name?;
 	value?;
-	body?;
-	args?;
 	insert?: boolean;
 	children?: XJadeNode[];
 	line?: number;
 	offset?: number;
 }
 
+interface XJadeTemplateNode extends XJadeNode {
+	prefix: string;
+	args: XJadeNode;
+	body: XJadeNode;
+}
 
 interface XJadeTagNode extends XJadeNode {
 	name: string;
