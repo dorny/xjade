@@ -8,8 +8,7 @@ XJade is a new template language for elegant HTML DOM creation in JavaScript.
 ##  Features
 * **Readable short-hand HTML** - XJade uses indented CSS selectors to describe node trees.
 * **Simplicity** - almost nothing to learn, it's only about CSS selectors and JavaScript.
-* **Client side Performance** - XJade directly uses DOM API for creation elements.
-* **No runtime dependencies** - except document object from DOM of course :).
+* **Client side Performance** - XJade directly uses DOM API.
 * **Easy integration** - works with AMD/CommonJS modules, TypeScript etc.
 * **Server side support** - generate your static HTML files with XJade and never write HTML again.
 
@@ -40,7 +39,7 @@ In fact, my experience with Jade, inspired me to start this project.
 
 ## Instalation
 
-In few days XJade will by available via npm.
+In few days XJade will be available via npm.
 
 
 ## Usage
