@@ -1,0 +1,59 @@
+var part = require('./part.js-tpl');
+
+exports.render = function template* (root) {
+
+    /*
+        This file is example of XJade syntax.
+        It has no other meaning.
+        For example this useless comment is example of multiline comment syntax :)
+    */
+
+    html
+        head
+            script[src="app.js"]
+            link[href="style.css" rel="stylesheet" type="text/css"]
+        body
+
+            //> This comment will be in HTML
+            // This one not
+
+            .header
+                h1 "Say hello to XJade"
+
+                div
+                    "this " "will " "create multiple textNodes"
+                    "Multiline text
+                        are not problem here."
+
+                div "Escaping is same as in javastring. Look: quote:\", \t, &, <"
+
+            .content
+                "Example of iteration"
+                ul#list
+                    - var items = [1,2,3];
+                    - items.forEach( function(it) {
+                        li > a[href={"#xxx-"+it}] "click " ${it}
+                    - });
+
+            .content
+                //> example of condition
+                - if (true) {
+                    span "condition evaluated to true"
+                - }
+
+            .content
+                //> example of imported template
+                {
+                    part.table(el);
+                }
+
+            .content
+                //> inline tags
+                div "some text" #{a[href="some-link"]} "som other text"
+
+            .content
+                //> text node as value
+                div ${"some text".toUpperCase()}
+
+            .footer
+}

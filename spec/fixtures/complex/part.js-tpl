@@ -1,0 +1,14 @@
+exports.table = function template* (root) {
+    table
+        tr
+            th "H1"
+            th "H2"
+        tr
+            td "r1"
+            td "r2"
+}
+
+
+exports.printName = function template* (root, name) {
+    ${name}
+}
