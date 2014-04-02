@@ -16,7 +16,7 @@ describe('Template extraction', function(){
     it('should compile to empty render function', function(){
         var filename = fixture('empty.js-tpl');;
         var source = xjade.compile(filename, {compile:'js'});
-        expect(source).toEqual('function render(root) {\n  var el;\n}\n');
+        expect(source).toEqual('function render(root) {\n  var el, __expr;\n}\n');
     });
 
     it('should compile multiple templates', function(){

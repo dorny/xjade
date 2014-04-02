@@ -18,6 +18,7 @@ var config = {
     directAttrs: {
         id: 'id',
         class: 'className',
+        type: 'type',
         name: 'name',
         value:'value',
         checked: 'checked',

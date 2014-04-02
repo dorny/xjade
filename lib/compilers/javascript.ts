@@ -24,7 +24,9 @@ class Compiler implements XJadeCompiler {
     currentLineOffset;
     lastPrintedLineOffset;
 
-    EL_TOKEN = '__el$';
+    EL_TOKEN = 'el';
+    NEXT_EL_TOKEN = '__el$';
+    EXPR_TOKEN = '__expr';
     INDENT_TOKEN = '  ';
 
     public compile(filename: string, opts: XJadeOptions) : string {
@@ -57,7 +59,7 @@ class Compiler implements XJadeCompiler {
 
     private nextEl() : string {
         this.elIndex++;
-        return this.EL_TOKEN + this.elIndex;
+        return this.NEXT_EL_TOKEN + this.elIndex;
     }
 
     private compileNode(node, parent) {
@@ -129,7 +131,7 @@ class Compiler implements XJadeCompiler {
         }
 
         this.append(node.prefix+' '+(node.name||'')+'('+node.args.value+') {');
-        this.append(this.INDENT_TOKEN+'var el;');
+        this.append(this.INDENT_TOKEN+'var '+this.EL_TOKEN+', '+this.EXPR_TOKEN+';');
         this.compileChildren(nodes, el);
         this.buffer.push('}');
     }
@@ -140,7 +142,7 @@ class Compiler implements XJadeCompiler {
 
     private compileTag(tag: XJadeTagNode, parent: string) {
         var el = this.nextEl();
-        this.append('var '+el+' = el = document.createElement('+q(tag.name)+');');
+        this.append('var '+el+' = '+this.EL_TOKEN+' = document.createElement('+q(tag.name)+');');
 
         if (tag.id) {
             this.append(el + '.id = ' + q(tag.id) + ';');
@@ -154,10 +156,16 @@ class Compiler implements XJadeCompiler {
             var name = attr.name.toLowerCase();
 
             if (name in config.directAttrs) {
-                this.append(el+'.'+config.directAttrs[name]+' = '+ this.escapeValue(attr.value)+';');
+                if (attr.value.type==='Code')
+                    this.append('if ('+this.EXPR_TOKEN+'= '+this.escapeValue(attr.value)+') '+el+'.'+config.directAttrs[name]+' = '+this.EXPR_TOKEN+';');
+                else
+                    this.append(el+'.'+config.directAttrs[name]+' = '+this.escapeValue(attr.value)+';');
             }
             else {
-                this.append(el+'.setAttribute(' + q(name)+', ' +  this.escapeValue(attr.value) + ');');
+                if (attr.value.type==='Code')
+                    this.append('if ('+this.EXPR_TOKEN+'= '+this.escapeValue(attr.value)+') '+el+'.setAttribute(' + q(name)+', ' + this.EXPR_TOKEN+');');
+                else
+                    this.append(el+'.setAttribute(' + q(name)+', ' +  this.escapeValue(attr.value) + ');');
             }
         })
 
