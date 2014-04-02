@@ -56,8 +56,8 @@ export function compile(filename: string, opts: XJadeOptions = {}) : string {
         if ('line' in e)
             msg += ':'+e.line;
 
-        if ('offset' in e)
-            msg += ':'+e.offset;
+        if ('column' in e)
+            msg += ':'+e.column;
 
         msg += ': '+e.message;
         throw new Error(msg);

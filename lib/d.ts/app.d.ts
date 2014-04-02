@@ -23,7 +23,7 @@ interface XJadeNode {
 	insert?: boolean;
 	children?: XJadeNode[];
 	line?: number;
-	offset?: number;
+	column?: number;
 }
 
 interface XJadeTemplateNode extends XJadeNode {

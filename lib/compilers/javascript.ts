@@ -108,7 +108,7 @@ class Compiler implements XJadeCompiler {
             throw {
                 message: 'Template must have one or more arguments',
                 line: node.args.line,
-                offset: node.args.offset
+                column: node.args.column
             }
         }
 
@@ -121,7 +121,7 @@ class Compiler implements XJadeCompiler {
             var nodes = parserTemplate.parse(node.body.value);
         } catch (e) {
             if (e.line===1) {
-                e.offset = e.offset + node.body.offset;
+                e.column = e.column + node.body.column;
             }
 
             e.line = node.body.line + e.line -1;
