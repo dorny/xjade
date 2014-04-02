@@ -148,11 +148,21 @@ class Compiler implements XJadeCompiler {
             this.append(el + '.id = ' + q(tag.id) + ';');
         }
 
-        if (tag.classes.length>0) {
-            this.append(el + '.className = ' + q(tag.classes.join(' ')) +';');
-        }
+        var classes =  q(tag.classes.join(' '));
+        tag.conditionalClasses.forEach((cls)=> {
+            classes+= '+('+this.escapeValue(cls.value)+' && '+q(cls.name)+' || "")'
+        });
 
-        tag.attributes.forEach((attr)=>{
+        if (classes!==q(''))
+            this.append(el + '.className = ' + classes +';');
+
+        this.compileTagAttribues(tag.attributes, el);
+        this.compileTagChidlren(tag.children, el);
+        this.append(parent+'.appendChild('+el+');');
+    }
+
+    private compileTagAttribues(attributes: XJadeNode[], el: string) {
+        attributes.forEach((attr) => {
             var name = attr.name.toLowerCase();
 
             if (name in config.directAttrs) {
@@ -167,27 +177,31 @@ class Compiler implements XJadeCompiler {
                 else
                     this.append(el+'.setAttribute(' + q(name)+', ' +  this.escapeValue(attr.value) + ');');
             }
-        })
+        });
+    }
 
-        if (tag.children.length>0) {
-
-            var skip = false;
-            if (tag.children.length===1 && tag.children[0].type==='TagBody') {
-                var body = tag.children[0];
-                if (body.children.length===1) {
-                    var first = body.children[0];
-                    if (first.type==='Text') {
-                        this.append(el+'.textContent = '+this.escapeValue(first.value)+';');
-                        skip = true;
-                    }
+    private compileTagChidlren(children: XJadeNode[], el: string) {
+        // if there are only one child and its type is "Text"
+        // set textContent rather ten appending text node (speed optimizaiton)
+        var skip = false;
+        if (children.length===1 && children[0].type==='TagBody') {
+            var body = children[0];
+            if (body.children.length===1) {
+                var first = body.children[0];
+                if (first.type==='Text') {
+                    this.append(el+'.textContent = '+this.escapeValue(first.value)+';');
+                    skip = true;
                 }
             }
-
-            if (!skip)
-                this.compileChildren(tag.children, el);
         }
 
-        this.append(parent+'.appendChild('+el+');');
+        if (!skip)
+            this.compileChildren(children, el);
+    }
+
+    private compileTagConditionalClass(attr: XJadeNode, el: string)
+    {
+
     }
 
     private compileTagBody(tag: XJadeTagNode, parent: string) {

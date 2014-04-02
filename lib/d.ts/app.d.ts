@@ -36,5 +36,6 @@ interface XJadeTagNode extends XJadeNode {
 	name: string;
 	id: string;
 	classes: string[];
+	conditionalClasses: XJadeNode[];
 	attributes: XJadeNode[];
 }
