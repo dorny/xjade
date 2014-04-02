@@ -18,53 +18,53 @@ class CompilerHTML {
     opts: XJadeOptions;
     root: string;
     modules = {};
-    currentFile;
+    currentDir;
 
     document;
     doctype: string;
-    removeDoctype = false;
 
     public compile(filename: string, opts: XJadeOptions) : string {
 
         this.opts = opts;
         this.document = this.createDocument();
 
-        this.root = path.dirname(filename);
+        this.root = path.dirname(path.resolve(filename));
         var rootModule = this.processTemplate(filename);
         rootModule.render(this.document);
 
-        var output = new xmldom.XMLSerializer().serializeToString(this.document);
-
-        if (this.removeDoctype) {
-            output = output.slice(this.doctype.length);
-        }
+        var output = this.document.doctype;
+        output += new xmldom.XMLSerializer().serializeToString(this.document);
 
         if (this.opts.pretty) {
             output = prettyPrint(output) + '\n';
         }
 
         return output;
-
     }
 
     private createDocument() {
         var doctype;
-        if (this.opts.doctype) {
+        if (this.opts.doctype != undefined) {
             doctype = config.doctypes[this.opts.doctype] || this.opts.doctype;
         }
         else {
             doctype = config.doctypes['default'];
         }
 
-        return new xmldom.DOMParser().parseFromString(doctype,'text/xml');
+        var impl = new xmldom.DOMImplementation();
+        var doc = impl.createDocument(null,null,null);
+        utils.fixXmlDOM(doc);
+        doc.doctype = doctype;
+        return doc;
     }
 
     private processTemplate(filename) {
+        var relative = path.relative(process.cwd(), filename);
         var jsCompiler = new JSCompiler();
-        var source = 'var exports = {};\n' + jsCompiler.compile(filename, this.opts) + '\n;exports;';
+        var source = 'var exports = {};\n' + jsCompiler.compile(relative, this.opts) + '\n;exports;';
 
-        var prev = this.currentFile;
-        this.currentFile = filename;
+        var prev = this.currentDir;
+        this.currentDir = path.dirname(filename);
 
         var module = vm.runInNewContext(source, {
             require: this.require.bind(this),
@@ -73,19 +73,16 @@ class CompilerHTML {
         }, filename);
 
         this.modules[filename] = module;
-        this.currentFile = prev;
+        this.currentDir = prev;
 
         return <any> module;
     }
 
     private require(filename) {
-
         var ext = path.extname(filename);
-
-        if (ext==='js-tpl' || ext==='ts-tpl') {
-            var absolute = path.resolve(this.currentFile, filename);
-            var relative = path.relative(process.cwd(), absolute);
-            return this.processTemplate(relative);
+        if (ext==='.js-tpl' || ext==='.ts-tpl') {
+            var absolute = path.resolve(this.currentDir, filename);
+            return this.processTemplate(absolute);
         }
         else {
             return require(filename);
