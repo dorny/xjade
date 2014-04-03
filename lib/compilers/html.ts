@@ -27,7 +27,7 @@ class CompilerHTML {
 
         this.root = path.dirname(path.resolve(filename));
         var rootModule = this.processTemplate(filename);
-        rootModule.render(this.document);
+        rootModule.render(this.document, opts.locals);
 
         return utils.serialize(this.document, opts.pretty);
     }
