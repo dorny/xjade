@@ -1,3 +1,7 @@
+/// <reference path="lib.d.ts" />
+/// <reference path="node.d.ts" />
+
+
 interface XJadeOptions {
 	compile?: string;
 	doctype?: string;
