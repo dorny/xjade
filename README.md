@@ -1,8 +1,10 @@
+[![Build Status](https://travis-ci.org/dorny/xjade.png?branch=master)](https://travis-ci.org/dorny/xjade)
+
 **WARNING - THIS PROJECT IS AT AN EARLY DEVELOPMENT STAGE**
 
 # XJade - HTML DOM Template Language
 
-XJade is a new template language for elegant HTML DOM creation in JavaScript.
+XJade is a new template language for elegant generation of HTML DOM Nodes in JavaScript.
 
 
 ##  Features
