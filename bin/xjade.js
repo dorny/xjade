@@ -9,15 +9,12 @@ var xjade = require('../lib/xjade');
 
 program.version(xjade.version);
 program
-  .usage("[options] [...files]")
-  .option("-c, --compile <kind>", "Compile template with specified compiler: \"js\"|\"html\"|\"ast\"", String, "js")
-
-  .option("--doctype <str>", "Doctype: \"5\"|\"xml\"|\"\"|\"transitional\"|\"strict\"|\"frameset\"|\"1\"|\"basic\"|\"mobile\" or custom", String, "5")
-  .option("-l, --locals <str>", "JSON string to be used as the locals object")
-  .option("-p, --pretty", "Print pretty HTML")
-
-  .option("--std-out", "Print result to stdout");
-
+  .usage('[options] [...files]')
+  .option('-c, --compile <kind>", "Compile template with specified compiler: "js"|"html"|"ast"', String, "js")
+  .option('--doctype <str>", "Doctype: "5"|"strict"|"transitional"|"frameset"|"xhtml"|"xhtml"|"xhtml"|"xhtml"|"basic"|"mobile" or custom', String, '5')
+  .option('-l, --locals <str>', 'JSON string to be used as the locals object')
+  .option('-p, --pretty', 'Print pretty HTML')
+  .option('--std-out', 'Print result to stdout');
 
 program.parse(process.argv);
 
