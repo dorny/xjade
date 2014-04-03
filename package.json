@@ -57,7 +57,7 @@
     "lodash": "2.4.x",
     "commander": "2.2.x",
     "html": "0.0.7",
-    "xmldom": "0.1.x"
+    "jsdom-little": "0.10.x"
   },
 
   "devDependencies": {

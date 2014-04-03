@@ -5,10 +5,9 @@ import utils = require('../utils');
 import config = require('../config');
 
 var vm = require('vm');
-var xmldom = require('xmldom');
 var path = require('path');
 var fs = require('fs');
-var prettyPrint = require('html').prettyPrint;
+
 
 export = CompilerHTML;
 
@@ -19,43 +18,18 @@ class CompilerHTML {
     root: string;
     modules = {};
     currentDir;
-
     document;
-    doctype: string;
 
     public compile(filename: string, opts: XJadeOptions) : string {
 
         this.opts = opts;
-        this.document = this.createDocument();
+        this.document = utils.createDocument(opts.doctype);
 
         this.root = path.dirname(path.resolve(filename));
         var rootModule = this.processTemplate(filename);
         rootModule.render(this.document);
 
-        var output = this.document.doctype;
-        output += new xmldom.XMLSerializer().serializeToString(this.document);
-
-        if (this.opts.pretty) {
-            output = prettyPrint(output) + '\n';
-        }
-
-        return output;
-    }
-
-    private createDocument() {
-        var doctype;
-        if (this.opts.doctype != undefined) {
-            doctype = config.doctypes[this.opts.doctype] || this.opts.doctype;
-        }
-        else {
-            doctype = config.doctypes['default'];
-        }
-
-        var impl = new xmldom.DOMImplementation();
-        var doc = impl.createDocument(null,null,null);
-        utils.fixXmlDOM(doc);
-        doc.doctype = doctype;
-        return doc;
+        return utils.serialize(this.document, opts.pretty);
     }
 
     private processTemplate(filename) {

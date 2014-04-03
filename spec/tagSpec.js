@@ -1,6 +1,6 @@
 var fs = require('fs');
 var path = require('path');
-var utils = require('./specUtils');
+var utils = require('../lib/utils');
 var xjade = require('../lib/xjade');
 
 var document = utils.createDocument();
@@ -26,7 +26,7 @@ describe('Tags', function(){
         var fn = eval(xjade.compile(fixture('tagClasses'), {compile: 'js'}));
         var root = document.createDocumentFragment();
         fn(root);
-        expect(root.firstChild.className).toEqual('class1 class2');
+        expect(root.firstChild.className).toEqual('class1 class2 class3 class4');
     });
 
     it('create inline "#{div}"', function(){

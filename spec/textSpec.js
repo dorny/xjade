@@ -1,6 +1,6 @@
 var fs = require('fs');
 var path = require('path');
-var utils = require('./specUtils');
+var utils = require('../lib/utils');
 var xjade = require('../lib/xjade');
 
 var document = utils.createDocument();

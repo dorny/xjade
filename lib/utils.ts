@@ -1,8 +1,17 @@
 import config = require('./config');
+var prettyPrint = require('html').prettyPrint;
 
-var xmldom = require('xmldom');
-var xmldomFixed = false;
-
+var _jsdom;
+function jsodm() {
+    if (_jsdom===undefined) {
+        try {
+            _jsdom = require('jsdom');
+        } catch (e) {
+            _jsdom = require('jsdom-little');
+        }
+    }
+    return _jsdom;
+}
 
 export function quote(str: string) {
     return "'" +escape(str).replace(/'/gm, "\\'") + "'";
@@ -17,23 +26,26 @@ export function escape(str: string) {
 }
 
 
-export function fixXmlDOM(docuement) {
-    if (xmldomFixed)
-        return;
+export function createDocument(doctype) {
+    return jsodm().jsdom(config.doctypes[doctype] || doctype || config.doctypes['default']);
+}
 
-    var el = docuement.createElement('div');
-    var ElementProto = Object.getPrototypeOf(el);
+export function parse(html) {
+    return jsodm().jsdom(html);
+}
 
-    for (var attrName in config.directAttrs) {
-        (function(attrName){
-            var propName = config.directAttrs[attrName];
-            Object.defineProperty(ElementProto, propName, {
-                get: function() { return this.getAttribute(attrName) },
-                set: function(value) { this.setAttribute(attrName,value) }
-            });
+export function serialize(document, pretty) {
+    var output = '';
 
-        }(attrName));
+    if (document.doctype) {
+        output += document.doctype.toString();
     }
 
-    xmldomFixed = true;
+    output += document.outerHTML;
+
+    if (pretty) {
+        output = prettyPrint(output) + '\n';
+    }
+
+    return output;
 }
