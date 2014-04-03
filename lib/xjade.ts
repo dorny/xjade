@@ -1,9 +1,11 @@
-/// <reference path="d.ts/node.d.ts" />
 /// <reference path="d.ts/app.d.ts" />
 
 import ASTCompiler = require('./compilers/ast');
 import JSCompiler = require('./compilers/javascript');
 import HTMLCompiler = require('./compilers/html');
+import utils = require('./utils');
+var ParserError = utils.ParserError;
+var ICError = utils.ICError;
 
 var packageVersion = require("../package.json").version;
 var fs = require('fs');
@@ -51,16 +53,19 @@ export function compile(filename: string, opts: XJadeOptions = {}) : string {
     try {
         result = compiler.compile(filename, opts);
     } catch(e) {
+
         var msg = e.filename || filename;
 
-        if ('line' in e)
-            msg += ':'+e.line;
+        if (e instanceof ParserError) {
+            throw new Error(e.toString());
+        }
+        else {
+            if (!(e instanceof ICError)){
+                e = ICError.wrap(e, filename);
+            }
 
-        if ('column' in e)
-            msg += ':'+e.column;
-
-        msg += ': '+e.message;
-        throw new Error(msg);
+            throw new Error(e.toString());
+        }
     }
 
     return result;

@@ -1,9 +1,13 @@
 /// <reference path="../d.ts/app.d.ts" />
+
 import config = require('../config');
 import utils = require('../utils');
+var ParserError = utils.ParserError;
+var ICError = utils.ICError;
 
 var parserSource = require('../parser/source');
 var parserTemplate = require('../parser/template');
+
 var _ = require('lodash');
 var q = utils.quote;
 var e = utils.escape;
@@ -13,6 +17,7 @@ export = Compiler;
 
 class Compiler implements XJadeCompiler {
 
+    filename: string;
     opts: XJadeOptions;
 
     buffer: string[] = [];
@@ -20,8 +25,8 @@ class Compiler implements XJadeCompiler {
     indent: number = 0;
     elIndex: number = -1;
 
-    templateLineOffset;
-    currentLineOffset;
+    templateLineOffset = 0;
+    currentLineOffset = 0;
     lastPrintedLineOffset;
 
     EL_TOKEN = 'el';
@@ -30,6 +35,7 @@ class Compiler implements XJadeCompiler {
     INDENT_TOKEN = '  ';
 
     public compile(filename: string, opts: XJadeOptions) : string {
+        this.filename = filename;
         this.opts = opts;
         var template = opts.readFile(filename);
         var nodes = parserSource.parse(template);
@@ -64,8 +70,8 @@ class Compiler implements XJadeCompiler {
 
     private compileNode(node, parent) {
         this.currentLineOffset = node.line;
-
         switch (node.type) {
+
 
             case 'OuterCode':
                 this.compileOuterCode(node);
@@ -96,7 +102,7 @@ class Compiler implements XJadeCompiler {
                 break;
 
             default:
-                throw  new Error("ICE: unknown node type: "+node.type);
+                throw new ICError("Unknown node type: "+node.type, this.filename, this.line(), null);
         }
     }
 
@@ -106,13 +112,9 @@ class Compiler implements XJadeCompiler {
 
     private compileTemplate(node: XJadeTemplateNode) {
         var m = node.args.value.match(/^([a-zA-Z$_][a-zA-Z0-9$_]*)/);
-        if (m===null) {
-            throw {
-                message: 'Template must have one or more arguments',
-                line: node.args.line,
-                column: node.args.column
-            }
-        }
+
+        if (m===null)
+            throw new ParserError('SyntaxError','Template must have one or more arguments', this.filename, node.args.line, node.args.column);
 
         this.templateLineOffset = node.body.line;
         this.currentLineOffset = 0;
@@ -122,18 +124,19 @@ class Compiler implements XJadeCompiler {
         try {
             var nodes = parserTemplate.parse(node.body.value);
         } catch (e) {
-            if (e.line===1) {
-                e.column = e.column + node.body.column;
-            }
+            var column = this.line()===1
+                ? e.column + node.body.column
+                : e.column;
 
-            e.line = node.body.line + e.line -1;
-            throw e;
+            throw new ParserError(e.name, e.message, this.filename, this.line(), column, e);
         }
 
         this.append(node.prefix+' '+(node.name||'')+'('+node.args.value+') {');
         this.append(this.INDENT_TOKEN+'var '+this.EL_TOKEN+', '+this.EXPR_TOKEN+';');
         this.compileChildren(nodes, el);
         this.buffer.push('}');
+
+        this.templateLineOffset = 0;
     }
 
     private compileCode(node: XJadeNode, parent: string) {
@@ -232,8 +235,12 @@ class Compiler implements XJadeCompiler {
             case 'String':return e(node.value);
             case 'Number': return q(node.value);
             case 'Code': return node.value;
-            default: throw new Error('ICE: Unknown value type: '+node.type);
+            default: throw new ICError('Unknown value type: '+node.type, this.filename, this.line());
+
         }
     }
 
+    private line() {
+        return this.templateLineOffset + this.currentLineOffset -1;
+    }
 }
