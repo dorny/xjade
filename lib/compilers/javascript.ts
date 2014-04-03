@@ -150,7 +150,7 @@ class Compiler implements XJadeCompiler {
 
         var classes =  q(tag.classes.join(' '));
         tag.conditionalClasses.forEach((cls)=> {
-            classes+= '+('+this.escapeValue(cls.value)+' && '+q(cls.name)+' || "")'
+            classes+= '+('+this.escapeValue(cls.value)+' && '+q(' '+cls.name)+' || "")'
         });
 
         if (classes!==q(''))
