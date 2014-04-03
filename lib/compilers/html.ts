@@ -35,15 +35,17 @@ class CompilerHTML {
     private processTemplate(filename) {
         var relative = path.relative(process.cwd(), filename);
         var jsCompiler = new JSCompiler();
-        var source = 'var exports = {};\n' + jsCompiler.compile(relative, this.opts) + '\n;exports;';
+        var source = jsCompiler.compile(relative, this.opts);
 
         var prev = this.currentDir;
         this.currentDir = path.dirname(filename);
 
-        var module = vm.runInNewContext(source, {
+        var module = {};
+        vm.runInNewContext(source, {
             require: this.require.bind(this),
             console: console,
             document: this.document,
+            exports: module,
         }, filename);
 
         this.modules[filename] = module;
