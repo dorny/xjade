@@ -3,9 +3,7 @@
 import ASTCompiler = require('./compilers/ast');
 import JSCompiler = require('./compilers/javascript');
 import HTMLCompiler = require('./compilers/html');
-import utils = require('./utils');
-var ParserError = utils.ParserError;
-var ICError = utils.ICError;
+import errors = require('./errors');
 
 var packageVersion = require("../package.json").version;
 var fs = require('fs');
@@ -54,17 +52,11 @@ export function compile(filename: string, opts: XJadeOptions = {}) : string {
         result = compiler.compile(filename, opts);
     } catch(e) {
 
-        var msg = e.filename || filename;
-
-        if (e instanceof ParserError) {
-            throw new Error(e.toString());
+        if (e instanceof errors.CustomError) {
+            throw e;
         }
         else {
-            if (!(e instanceof ICError)){
-                e = ICError.wrap(e, filename);
-            }
-
-            throw new Error(e.toString());
+            throw errors.ICError.wrap(e, filename);
         }
     }
 

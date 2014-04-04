@@ -3,6 +3,8 @@
 import JSCompiler = require('./javascript');
 import utils = require('../utils');
 import config = require('../config');
+import errors = require('../errors');
+var RuntimeError = errors.RuntimeError;
 
 var vm = require('vm');
 var path = require('path');
@@ -17,6 +19,7 @@ class CompilerHTML {
     opts: XJadeOptions;
     root: string;
     modules = {};
+    sources = {};
     currentDir;
     document;
 
@@ -27,7 +30,18 @@ class CompilerHTML {
 
         this.root = path.dirname(path.resolve(filename));
         var rootModule = this.processTemplate(filename);
-        rootModule.render(this.document, opts.locals);
+
+        try {
+            rootModule.render(this.document, opts.locals);
+        } catch (e) {
+            var match;
+            if (e.stack && (match= RuntimeError.match(e.stack))!=null) {
+                throw new RuntimeError(e, match.filename, this.sources[match.filename], match.line, match.column);
+            }
+            else {
+                throw new RuntimeError(e);
+            }
+        }
 
         return utils.serialize(this.document, opts.pretty);
     }
@@ -49,6 +63,7 @@ class CompilerHTML {
         }, filename);
 
         this.modules[filename] = module;
+        this.sources[filename] = source;
         this.currentDir = prev;
 
         return <any> module;
@@ -64,7 +79,6 @@ class CompilerHTML {
             return require(filename);
         }
     }
-
 }
 
 

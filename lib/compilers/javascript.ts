@@ -2,8 +2,10 @@
 
 import config = require('../config');
 import utils = require('../utils');
-var ParserError = utils.ParserError;
-var ICError = utils.ICError;
+import errors = require('../errors');
+var ParserError = errors.ParserError;
+var ICError = errors.ICError;
+var IOError = errors.IOError;
 
 var parserSource = require('../parser/source');
 var parserTemplate = require('../parser/template');
@@ -37,7 +39,13 @@ class Compiler implements XJadeCompiler {
     public compile(filename: string, opts: XJadeOptions) : string {
         this.filename = filename;
         this.opts = opts;
-        var template = opts.readFile(filename);
+
+        try {
+            var template = opts.readFile(filename);
+        } catch(e){
+            throw new IOError(e);
+        }
+
         var nodes = parserSource.parse(template);
         nodes.forEach((node)=> this.compileNode(node, null));
         return this.buffer.join('');
@@ -124,11 +132,11 @@ class Compiler implements XJadeCompiler {
         try {
             var nodes = parserTemplate.parse(node.body.value);
         } catch (e) {
-            var column = this.line()===1
+            var column = (e.line===1)
                 ? e.column + node.body.column
                 : e.column;
 
-            throw new ParserError(e.name, e.message, this.filename, this.line(), column, e);
+            throw new ParserError(e.name, e.message, this.filename, e.line, column, e);
         }
 
         this.append(node.prefix+' '+(node.name||'')+'('+node.args.value+') {');
