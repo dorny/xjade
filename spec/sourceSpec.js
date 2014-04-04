@@ -1,7 +1,8 @@
 var fs = require('fs');
 var path = require('path')
 var xjade = require('../lib/xjade');
-var fixture = function(name){ return path.join(__dirname,'fixtures','source',name); };
+
+var fixture = function(name){ return path.relative(process.cwd(), path.join(__dirname,'fixtures','source',name)); };
 
 
 describe('Template extraction', function(){

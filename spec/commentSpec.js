@@ -4,20 +4,20 @@ var utils = require('../lib/utils');
 var xjade = require('../lib/xjade');
 
 var document = utils.createDocument();
-var fixture = function(name){ return path.join(__dirname,'fixtures','comment',name+'.js-tpl'); };
+var fixture = function(name){ return path.relative(process.cwd(), path.join(__dirname,'fixtures','comment',name)); };
 
 
 describe('Comments', function(){
 
     it('multiline comment', function(){
-        var fn = eval(xjade.compile(fixture('multiline'), {compile: 'js'}));
+        var fn = eval(xjade.compile(fixture('multiline.js-tpl'), {compile: 'js'}));
         var root = document.createDocumentFragment();
         fn(root);
         expect(root.childNodes.length).toEqual(0);
     });
 
     it('multiline HTML comment', function(){
-        var fn = eval(xjade.compile(fixture('multilineHTML'), {compile: 'js'}));
+        var fn = eval(xjade.compile(fixture('multilineHTML.js-tpl'), {compile: 'js'}));
         var root = document.createDocumentFragment();
         fn(root);
         expect(root.childNodes.length).toEqual(1);
@@ -25,14 +25,14 @@ describe('Comments', function(){
     });
 
     it('singleline comment', function(){
-        var fn = eval(xjade.compile(fixture('singleline'), {compile: 'js'}));
+        var fn = eval(xjade.compile(fixture('singleline.js-tpl'), {compile: 'js'}));
         var root = document.createDocumentFragment();
         fn(root);
         expect(root.childNodes.length).toEqual(0);
     });
 
     it('singleline HTML comment', function(){
-        var fn = eval(xjade.compile(fixture('singlelineHTML'), {compile: 'js'}));
+        var fn = eval(xjade.compile(fixture('singlelineHTML.js-tpl'), {compile: 'js'}));
         var root = document.createDocumentFragment();
         fn(root);
         expect(root.childNodes.length).toEqual(1);
