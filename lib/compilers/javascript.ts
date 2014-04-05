@@ -31,6 +31,7 @@ class Compiler implements XJadeCompiler {
     currentLineOffset = 0;
     lastPrintedLineOffset;
 
+    PARENT_TOKEN = 'parent';
     EL_TOKEN = 'el';
     NEXT_EL_TOKEN = '__el$';
     EXPR_TOKEN = '__expr';
@@ -119,16 +120,10 @@ class Compiler implements XJadeCompiler {
     }
 
     private compileTemplate(node: XJadeTemplateNode) {
-        var m = node.args.value.match(/^([a-zA-Z$_][a-zA-Z0-9$_]*)/);
-
-        if (m===null)
-            throw new ParserError('SyntaxError','Template must have one or more arguments', this.filename, node.args.line, node.args.column);
-
         this.templateLineOffset = node.body.line;
         this.currentLineOffset = 0;
         this.lastPrintedLineOffset = 0;
 
-        var el = m[1];
         try {
             var nodes = parserTemplate.parse(node.body.value);
         } catch (e) {
@@ -139,9 +134,14 @@ class Compiler implements XJadeCompiler {
             throw new ParserError(e.name, e.message, this.filename, e.line, column, e);
         }
 
-        this.append(node.prefix+' '+(node.name||'')+'('+node.args.value+') {');
+        var args = node.args.value
+            ? ','+node.args.value
+            : '';
+
+        this.append(node.prefix+' '+(node.name||'')+'('+this.PARENT_TOKEN+args+') {');
         this.append(this.INDENT_TOKEN+'var '+this.EL_TOKEN+', '+this.EXPR_TOKEN+';');
-        this.compileChildren(nodes, el);
+        this.compileChildren(nodes, this.PARENT_TOKEN);
+        this.append(this.INDENT_TOKEN+'return parent;');
         this.buffer.push('}');
 
         this.templateLineOffset = 0;

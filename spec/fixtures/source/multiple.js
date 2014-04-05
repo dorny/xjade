@@ -2,14 +2,16 @@
     some source
 */
 
-var anonymous = function (root) {
+var anonymous = function (parent) {
   var el, __expr;
+  return parent;
 }
 
 // som code
 
-function nammed(root) {
+function nammed(parent) {
   var el, __expr;
+  return parent;
 }
 
 // some code

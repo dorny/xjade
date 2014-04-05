@@ -1,4 +1,4 @@
-exports.render = function template*(root) {
+exports.render = function template*() {
 
     - if (true) {
         "OK"

@@ -1,7 +1,7 @@
 {
   "name": "xjade",
 
-  "version": "0.0.7",
+  "version": "0.0.8",
 
   "description": "XJade template engine",
 
@@ -13,6 +13,8 @@
     "jade",
     "haml"
   ],
+
+  "homepage": "https://github.com/dorny/xjade",
 
   "bugs": "https://github.com/dorny/xjade/issues",
 
@@ -70,7 +72,6 @@
     "pegjs": "0.8.x",
     "grunt-shell": "0.3.x",
     "jasmine-node": "1.14.x"
-  },
+  }
 
-  "readmeFilename": "Readme.md"
 }

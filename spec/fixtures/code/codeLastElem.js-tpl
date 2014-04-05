@@ -1,5 +1,4 @@
-
-exports.render = function template*(root) {
+exports.render = function template*() {
     div
     {
         el.textContent = "OK";

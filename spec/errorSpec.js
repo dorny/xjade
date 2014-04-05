@@ -29,19 +29,6 @@ describe('Error reporting', function(){
         expect(fn).toThrow(err);
     });
 
-    it('should throw ParserError at missing root argmuent', function(){
-        var filename = fixture('missingRoot.js-tpl');
-        var fn = function(){ xjade.compile(filename, {compile: 'html'}); };
-        var err = new errors.ParserError(
-            'SyntaxError',
-            'Template must have one or more arguments',
-            filename,
-            1, 37
-        );
-
-        expect(fn).toThrow(err);
-    });
-
     it('should throw RuntimeError', function(){
         var filename = fixture('runtimeError.js-tpl');
         var fn = function() { xjade.compile(filename, {compile: 'html'}); };

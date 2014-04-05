@@ -1,3 +1,3 @@
-exports.render = function template*(root) {
+exports.render = function template*() {
     input[id="some-id" class="class" name="name" value="value" data-custom="custom" data-fail={false}]
 }
