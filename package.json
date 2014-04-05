@@ -1,7 +1,7 @@
 {
   "name": "xjade",
 
-  "version": "0.0.8",
+  "version": "0.0.9",
 
   "description": "XJade template engine",
 
@@ -26,16 +26,9 @@
   },
 
   "files": [
-    "bin/xjade.js",
-    "lib/compilers/ast.js",
-    "lib/compilers/html.js",
-    "lib/compilers/javascript.js",
-    "lib/parser/source.js",
-    "lib/parser/template.js",
-    "lib/config.js",
-    "lib/utils.js",
-    "lib/xjade.js",
-    "LICENSE.md",
+    "bin",
+    "lib",
+    "LICENSE.txt",
     "README.md",
     "package.json"
   ],

@@ -23,7 +23,7 @@ var compilers = {
 export var defaults : XJadeOptions = {
     compile: 'js',
     doctype: '5',
-    locals: {},
+    data: undefined,
     pretty: false,
     readFile: (filename)=> fs.readFileSync(filename).toString()
 }

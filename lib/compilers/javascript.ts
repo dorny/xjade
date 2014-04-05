@@ -72,9 +72,12 @@ class Compiler implements XJadeCompiler {
         return space;
     }
 
-    private nextEl() : string {
+    private nextEl(tagName?: string) : string {
         this.elIndex++;
-        return this.NEXT_EL_TOKEN + this.elIndex;
+        if (tagName)
+            return '__'+(tagName.replace('-',''))+'$'+this.elIndex;
+        else
+            return this.NEXT_EL_TOKEN + this.elIndex;
     }
 
     private compileNode(node, parent) {
@@ -152,7 +155,7 @@ class Compiler implements XJadeCompiler {
     }
 
     private compileTag(tag: XJadeTagNode, parent: string) {
-        var el = this.nextEl();
+        var el = this.nextEl(tag.name);
         this.append('var '+el+' = '+this.EL_TOKEN+' = document.createElement('+q(tag.name)+');');
 
         if (tag.id) {

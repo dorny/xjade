@@ -31,17 +31,7 @@ class CompilerHTML {
         this.root = path.dirname(path.resolve(filename));
         var rootModule = this.processTemplate(filename);
 
-        try {
-            rootModule.render(this.document, opts.locals);
-        } catch (e) {
-            var match;
-            if (e.stack && (match= RuntimeError.match(e.stack))!=null) {
-                throw new RuntimeError(e, match.filename, this.sources[match.filename], match.line, match.column);
-            }
-            else {
-                throw new RuntimeError(e);
-            }
-        }
+        this.run(()=> rootModule.render(this.document, opts.data));
 
         return utils.serialize(this.document, opts.pretty);
     }
@@ -50,20 +40,22 @@ class CompilerHTML {
         var relative = path.relative(process.cwd(), filename);
         var jsCompiler = new JSCompiler();
         var source = jsCompiler.compile(relative, this.opts);
+        this.sources[filename] = source;
 
         var prev = this.currentDir;
         this.currentDir = path.dirname(filename);
 
         var module = {};
-        vm.runInNewContext(source, {
-            require: this.require.bind(this),
-            console: console,
-            document: this.document,
-            exports: module,
-        }, filename);
+        this.run(()=> {
+            vm.runInNewContext(source, {
+                require: this.require.bind(this),
+                console: console,
+                document: this.document,
+                exports: module,
+            }, filename);
+        });
 
         this.modules[filename] = module;
-        this.sources[filename] = source;
         this.currentDir = prev;
 
         return <any> module;
@@ -77,6 +69,20 @@ class CompilerHTML {
         }
         else {
             return require(filename);
+        }
+    }
+
+    private run(fn) {
+        try {
+            return fn()
+        }
+        catch (e) {
+            var match;
+            if (e.stack  &&  (match= RuntimeError.match(e.stack))!==null  && match.filename!==__filename)
+                throw new RuntimeError(e, match.filename, this.sources[match.filename], match.line, match.column);
+            else {
+                throw new RuntimeError(e);
+            }
         }
     }
 }

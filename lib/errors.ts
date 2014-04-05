@@ -1,5 +1,7 @@
 /// <reference path="d.ts/app.d.ts" />
 
+var path = require('path');
+
 function inspect(error) {
     require('util').inspect(error);
 }
@@ -119,7 +121,12 @@ export class RuntimeError extends CustomError {
 
     public toString() {
 
-        var text = ((this.filename+': ') || '') + 'RuntimeError: '+ this._message;
+        var text = '';
+        if (this.filename) {
+            text += this.filename+': ';
+        }
+
+        text += 'RuntimeError: ' + this._message;
 
         if (this.source) {
             var lines = this.source.split('\n');
@@ -134,7 +141,7 @@ export class RuntimeError extends CustomError {
         }
 
         if (this.stack)
-            text += '\n'+this.stack;
+            text += '\n\nStack: '+this.stack;
 
         return text;
     }
@@ -143,7 +150,12 @@ export class RuntimeError extends CustomError {
         var line = stack.slice(stack.indexOf('\n')+1);
         line = line.slice(0,line.indexOf('\n'));
 
-        var m = line.match(/^\s*at\s+.*?\((.+):(\d+):(\d+)\)$/)
+        var m;
+        if (line[line.length-1]===')')
+            m = line.match(/^\s*at\s+.*?\((.+):(\d+):(\d+)\)$/);
+        else
+            m = line.match(/^\s*at\s+(.+):(\d+):(\d+)$/);
+
         if (m) {
             return {
                 filename: m[1],

@@ -5,7 +5,7 @@
 interface XJadeOptions {
 	compile?: string;
 	doctype?: string;
-	locals?: any;
+	data?: any;
 	pretty?: boolean;
 	readFile?: (path:string)=>string;
 }
