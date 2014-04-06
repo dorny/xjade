@@ -1,56 +1,66 @@
 [![Build Status](https://travis-ci.org/dorny/xjade.png?branch=master)](https://travis-ci.org/dorny/xjade)
+[![Dependency Status](https://gemnasium.com/dorny/xjade.png)](https://gemnasium.com/dorny/xjade)
 
 **WARNING - THIS PROJECT IS AT AN EARLY DEVELOPMENT STAGE**
 
-# XJade - HTML DOM Template Language
+# XJade
 
-XJade is a new template language for elegant generation of HTML DOM Nodes in JavaScript.
+XJade is a new template language which accelerates and simplifies building dynamic user interfaces in JavaScript.  
 
 
 ##  Features
 * **Readable short-hand HTML** - XJade uses indented CSS selectors to describe node trees.
-* **Simplicity** - almost nothing to learn, it's only about CSS selectors and JavaScript.
-* **Client side Performance** - XJade directly uses DOM API.
-* **Easy integration** - works with AMD/CommonJS modules, TypeScript etc.
-* **Server side support** - generate your static HTML files with XJade and never write HTML again.
+* **DOM structure** - Elements are created using standard browser DOM API.
+* **Embedded into JavaScript** - Templates are written inside regular JavaScript files.
+* **Server side support** - Generate your static HTML files with XJade and never write HTML again.
+* **Easy integration** - works with AMD/CommonJS modules, TypeScript or any binding library.
+* **Simplicity** - It's only about CSS selectors syntax and JavaScript, not a whole new language.
 
 
-## Why use XJade?
-
-Writing readable and safe code for dynamic creation of HTML nodes in JavaScript is not so easy.
-HTML itself is a mess and concatenation of HTML strings may lead to security holes. There is no HTML syntax highlightig inside strings nor multiline support. Another problem is when you need references to nodes defined somewhere inside of HTML string. You have to find them manulay later, probabbly by using CSS selectors which is error prone and brings performance drawbacks.
-
-On the other hand DOM API is simply too verbose for generating complicated views.
-Ain't Nobody Got Time For That. Period.
-Even if you use some DOM builder library, it will still be ugly and verbose.
+## Why Use Template Engine?
+* DOM API is too verbose.
+* HTML String concatenation is security hole and hard to read (no HTML syntax highlightig, no multiline strings...).
+* jQuery or other libs are still verbose and messy if chain calls doesn't fit your logic.
+* Cloning prearranged node trees don't work well with conditions or many value bindings.
 
 
-### XJade vs Jade
+## Why Use XJade Over Alternatives?
 
-[Jade](http://jade-lang.com/) is probably most used template engine in JavaScript world.
-It's feature rich, mature project, but for client side usage has some drawbacks:
-
-* It uses HTML string concatenation - not so good for client side.
-* Include feature will copy whole contet of template - duplicated code.
-* Not so close to CSS Selectors
-* Too many features. Template language should be as simple as possible.
-
-
-In fact, my experience with Jade, inspired me to start this project.
+XJade has unique balanced set of features and simplicity.  
+There are no other template engine which:  
+* has nice CSS like syntax inside JavaScript files
+* generates DOM structure instead of string
+* logic is written in plain JavaScript rather another abstract syntax
+* templates are pre-compiled
+* can be used with AMD/CommonJS, TypeScript or anything else because each embedded template will be replaced with single function
 
 
 ## Instalation
 
-In few days XJade will be available via npm.
+
+### Command line
+After installing the latest version of [node](http://nodejs.org/), install with:
+
+```shell
+npm install -g xjade
+```
 
 
-## Usage
+### Grunt plugin (recommended)
+* [grunt-xjade](https://github.com/dorny/grunt-xjade)
 
-TODO
+
+### Sublime Text plugin
+* [sublime-xjade](https://github.com/dorny/sublime-xjade)
+
 
 ## Syntax
 
 TODO
+
+## Examples:
+
+* [XJade JSON viewer](https://github.com/dorny/xjade-example-json)
 
 ## Acknowledgements
 
