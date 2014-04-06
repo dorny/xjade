@@ -213,11 +213,6 @@ class Compiler implements XJadeCompiler {
             this.compileChildren(children, el);
     }
 
-    private compileTagConditionalClass(attr: XJadeNode, el: string)
-    {
-
-    }
-
     private compileTagBody(tag: XJadeTagNode, parent: string) {
         tag.children.forEach( (child) => this.compileNode(child, parent) );
     }
