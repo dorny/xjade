@@ -1,6 +1,6 @@
 var part = require('./part');
 
-exports.render = function template* (root) {
+exports.render = function @template () {
 
     /*
         This file is example of XJade syntax.

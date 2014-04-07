@@ -9,7 +9,7 @@ var anonymous = function (parent) {
 
 // som code
 
-function nammed(parent) {
+function named(parent) {
   var el, __expr;
   return parent;
 }

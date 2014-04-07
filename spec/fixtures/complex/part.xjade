@@ -1,4 +1,4 @@
-exports.table = function template* () {
+exports.table = function @template () {
     table
         tr
             th "H1"
@@ -9,6 +9,6 @@ exports.table = function template* () {
 }
 
 
-exports.printName = function template* (name) {
+exports.printName = function @template (name) {
     ${name}
 }

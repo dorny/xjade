@@ -1,4 +1,4 @@
-exports.render = function template*() {
+exports.render = function @template() {
     "text
         multiline
     "

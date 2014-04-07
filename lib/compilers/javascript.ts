@@ -72,12 +72,10 @@ class Compiler implements XJadeCompiler {
         return space;
     }
 
-    private nextEl(tagName?: string) : string {
+    private nextEl(tagName: string) : string {
         this.elIndex++;
-        if (tagName)
-            return '__'+(tagName.replace('-',''))+'$'+this.elIndex;
-        else
-            return this.NEXT_EL_TOKEN + this.elIndex;
+        var name = tagName.replace(/[^\w$]/g, '_')
+        return '__'+tagName+'$'+this.elIndex;
     }
 
     private compileNode(node, parent) {
@@ -137,11 +135,11 @@ class Compiler implements XJadeCompiler {
             throw new ParserError(e.name, e.message, this.filename, e.line, column, e);
         }
 
-        var args = node.args.value
-            ? ','+node.args.value
+        var args = node.args
+            ? ','+node.args
             : '';
 
-        this.append(node.prefix+' '+(node.name||'')+'('+this.PARENT_TOKEN+args+') {');
+        this.append((node.name||'')+'('+this.PARENT_TOKEN+args+') {');
         this.append(this.INDENT_TOKEN+'var '+this.EL_TOKEN+', '+this.EXPR_TOKEN+';');
         this.compileChildren(nodes, this.PARENT_TOKEN);
         this.append(this.INDENT_TOKEN+'return parent;');

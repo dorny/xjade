@@ -1,1 +1,1 @@
-function template* render(){}
+function @template render(){}

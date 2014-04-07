@@ -2,10 +2,10 @@
     some source
 */
 
-var anonymous = function template* () { }
+var anonymous = function @template () { }
 
 // som code
 
-function template* nammed() { }
+function @template named() { }
 
 // some code
