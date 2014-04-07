@@ -9,8 +9,8 @@ program.version(xjade.version);
 program
   .usage('[options] [...files]')
   .option('-c, --compile <kind>',"Specify compiler: 'js' (default), 'html' or 'ast'.", String, "js")
-  .option('--doctype <str>', "Specify doctype: '5' (default), 'strict', 'transitional', 'xhtml' or other.", String, '5')
-  .option('--data <str>', 'Filename or string with input data input JSON format.')
+  .option('--doctype <str>', "Specify doctype: '5' (default), 'strict', 'transitional', 'xhtml' or custom.", String, '5')
+  .option('--data <str>', 'Filename or string with input data in JSON format.')
   .option('-p, --pretty', 'Print pretty HTML.')
 
 program.parse(process.argv);
