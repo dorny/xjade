@@ -5,7 +5,7 @@
 
 # XJade
 
-XJade is a new template language which accelerates and simplifies building dynamic user interfaces in JavaScript.  
+XJade is a new template language which accelerates and simplifies building complex dynamic user interfaces in JavaScript.  
 
 
 ##  Features
@@ -19,9 +19,9 @@ XJade is a new template language which accelerates and simplifies building dynam
 
 ## Why Use Template Engine?
 * DOM API is too verbose.
-* HTML String concatenation is security hole and hard to read (no HTML syntax highlightig, no multiline strings...).
+* HTML String concatenation is security hole and hard to read (no HTML syntax highlightig, no multiline strings, etc.).
 * jQuery or other libs are still verbose and messy if chain calls doesn't fit your logic.
-* Cloning prearranged node trees don't work well with conditions or many value bindings.
+* Cloning prearranged node trees don't work well with conditions or when you need references to nodes inside template.
 
 
 ## Why Use XJade Over Alternatives?
@@ -33,6 +33,7 @@ There are no other template engine which:
 * logic is written in plain JavaScript rather another abstract syntax
 * templates are pre-compiled
 * can be used with AMD/CommonJS, TypeScript or anything else because each embedded template will be replaced with single function
+* has no runtime dependencies (excpet DOM API ofcourse)
 
 
 ## Instalation
@@ -45,13 +46,31 @@ After installing the latest version of [node](http://nodejs.org/), install with:
 npm install -g xjade
 ```
 
+#### Usage:
+<pre>
+Usage: xjade [options] [...files]
+
+Options:
+
+  -h, --help             output usage information
+  -V, --version          output the version number
+  -c, --compile &lt;kind&gt;   Specify compiler: 'js' (default), 'html' or 'ast'.
+  --doctype &lt;str&gt;        Specify doctype: '5' (default), 'strict', 'transitional', 'xhtml' or other.
+  --data &lt;str&gt;           Filename or string with input data input JSON format.
+  -p, --pretty           Print pretty HTML.
+
+</pre>
+
+Command line version outputs compiled templates to it's standard output.
+To save your templates to file use [Redirection](http://en.wikipedia.org/wiki/Redirection_(computing)).
+
 
 ### Grunt plugin (recommended)
-* [grunt-xjade](https://github.com/dorny/grunt-xjade)
+* [grunt-xjade](https://github.com/dorny/grunt-xjade) - This is the best way how to integrate XJade into your project.
 
 
-### Sublime Text plugin
-* [sublime-xjade](https://github.com/dorny/sublime-xjade)
+### IDE support
+* [sublime-xjade](https://github.com/dorny/sublime-xjade) - Syntax highlighting and snippets for [Sublime Text](http://www.sublimetext.com/) editor.
 
 
 ## Syntax
@@ -62,6 +81,25 @@ TODO
 
 * [XJade JSON viewer](https://github.com/dorny/xjade-example-json)
 
+
+## License
+
+MIT
+
+
 ## Acknowledgements
 
-TODO
+### Maindata
+Developing firts prototype of XJade was supported by [MAINDATA](http://www.maindata.info/)  
+![MAINDATA](https://dl.dropboxusercontent.com/u/40395608/MD-logo.png)
+
+
+### Jade
+[Jade](http://jade-lang.com/) was first template engine I have used.  
+This project started as try to fix Jade client side limitations. That's why it was named XJade.  
+
+### Other
+
+Thanks to [PEG.js](http://pegjs.majda.cz/) for amazing parser generator.  
+Thanks to [Blade](https://github.com/bminer/node-blade) for idea of forking Jade and using PEG.js.  
+Thanks to [ist.js](http://njoyard.github.io/ist/) for idea of using DOM API directly rather then strings.  
