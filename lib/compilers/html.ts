@@ -62,12 +62,19 @@ class CompilerHTML {
     }
 
     private require(filename) {
+        var ext = path.extname(filename);
         var absolute = path.resolve(this.currentDir, filename);
-        if (path.extname(absolute)==='.xjade' || (fs.existsSync(absolute+'.xjade') && (absolute+='.xjade'))) {;
-            return this.processTemplate(absolute);
+
+        if (filename[0]!=='.' || ext==='.js' || fs.existsSync(absolute+'.js')) {
+            return require(filename);
         }
         else {
-            return require(filename);
+
+            if (ext!=='.xjade') {
+                absolute += '.xjade';
+            }
+
+            return this.processTemplate(absolute);
         }
     }
 
