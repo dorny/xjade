@@ -1,4 +1,4 @@
-var part = require('./part.js-tpl');
+var part = require('./part');
 
 exports.render = function template* (root) {
 

@@ -10,7 +10,7 @@ var fixture = function(name){ return path.relative(process.cwd(), path.join(__di
 describe('Parent Tags', function(){
 
     it('text node', function(){
-        var fn = eval(xjade.compile(fixture('textNode.js-tpl'), {compile: 'js'}));
+        var fn = eval(xjade.compile(fixture('textNode.xjade'), {compile: 'js'}));
         var root = document.createDocumentFragment();
         fn(root);
         var div = root.firstChild;
@@ -19,7 +19,7 @@ describe('Parent Tags', function(){
     });
 
     it('text multiline', function(){
-        var fn = eval(xjade.compile(fixture('textMultiLine.js-tpl'), {compile: 'js'}));
+        var fn = eval(xjade.compile(fixture('textMultiLine.xjade'), {compile: 'js'}));
         var root = document.createDocumentFragment();
         fn(root);
         var div = root.firstChild;
@@ -28,7 +28,7 @@ describe('Parent Tags', function(){
     });
 
     it('text code', function(){
-        var fn = eval(xjade.compile(fixture('textCode.js-tpl'), {compile: 'js'}));
+        var fn = eval(xjade.compile(fixture('textCode.xjade'), {compile: 'js'}));
         var root = document.createDocumentFragment();
         fn(root,'text');
         var div = root.firstChild;

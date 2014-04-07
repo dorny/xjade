@@ -10,7 +10,7 @@ var fixture = function(name){ return path.relative(process.cwd(), path.join(__di
 describe('Complex example', function(){
 
     it('should generate same html as index.html', function(){
-        var actual = xjade.compile(fixture('index.js-tpl'), {compile: 'html', pretty:true});
+        var actual = xjade.compile(fixture('index.xjade'), {compile: 'html', pretty:true});
         var expected = fs.readFileSync(fixture('index.html')).toString();
         expect(actual).toEqual(expected);
     });

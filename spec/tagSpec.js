@@ -10,35 +10,35 @@ var fixture = function(name){ return path.relative(process.cwd(), path.join(__di
 describe('Tags', function(){
 
     it('create <div>', function(){
-        var fn = eval(xjade.compile(fixture('tagName.js-tpl'), {compile: 'js'}));
+        var fn = eval(xjade.compile(fixture('tagName.xjade'), {compile: 'js'}));
         var root = document.createDocumentFragment();
         fn(root);
         expect(root.firstChild.tagName.toUpperCase()).toEqual('DIV');
     });
 
     it('create div with "#some-id"', function(){
-        var fn = eval(xjade.compile(fixture('tagID.js-tpl'), {compile: 'js'}));
+        var fn = eval(xjade.compile(fixture('tagID.xjade'), {compile: 'js'}));
         var root = document.createDocumentFragment();
         fn(root);
         expect(root.firstChild.id).toEqual('some-id');
     });
 
     it('create with classes ".class1 class2"', function(){
-        var fn = eval(xjade.compile(fixture('tagClasses.js-tpl'), {compile: 'js'}));
+        var fn = eval(xjade.compile(fixture('tagClasses.xjade'), {compile: 'js'}));
         var root = document.createDocumentFragment();
         fn(root);
         expect(root.firstChild.className).toEqual('class1 class2 class3 class4');
     });
 
     it('create inline "#{div}"', function(){
-        var fn = eval(xjade.compile(fixture('tagInline.js-tpl'), {compile: 'js'}));
+        var fn = eval(xjade.compile(fixture('tagInline.xjade'), {compile: 'js'}));
         var root = document.createDocumentFragment();
         fn(root);
         expect(root.firstChild.tagName.toUpperCase()).toEqual('DIV');
     });
 
     it('create direct child "div > span"', function(){
-        var fn = eval(xjade.compile(fixture('tagChild.js-tpl'), {compile: 'js'}));
+        var fn = eval(xjade.compile(fixture('tagChild.xjade'), {compile: 'js'}));
         var root = document.createDocumentFragment();
         fn(root);
         expect(root.firstChild.tagName.toUpperCase()).toEqual('DIV');
@@ -46,7 +46,7 @@ describe('Tags', function(){
     });
 
     it('create div with attributes', function(){
-        var fn = eval(xjade.compile(fixture('tagAttributes.js-tpl'), {compile: 'js'}));
+        var fn = eval(xjade.compile(fixture('tagAttributes.xjade'), {compile: 'js'}));
         var root = document.createDocumentFragment();
         fn(root);
         var input = root.firstChild;
@@ -58,7 +58,7 @@ describe('Tags', function(){
     });
 
     it('create div with attributes assigned js code values', function(){
-        var fn = eval(xjade.compile(fixture('tagAttributesValue.js-tpl'), {compile: 'js'}));
+        var fn = eval(xjade.compile(fixture('tagAttributesValue.xjade'), {compile: 'js'}));
         var root = document.createDocumentFragment();
         fn(root, 'id','name');
         var div = root.firstChild;

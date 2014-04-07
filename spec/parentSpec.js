@@ -10,7 +10,7 @@ var fixture = function(name){ return path.relative(process.cwd(), path.join(__di
 describe('Parent Tags', function(){
 
     it('tag body', function(){
-        var fn = eval(xjade.compile(fixture('tagBody.js-tpl'), {compile: 'js'}));
+        var fn = eval(xjade.compile(fixture('tagBody.xjade'), {compile: 'js'}));
         var root = document.createDocumentFragment();
         fn(root);
         var div = root.firstChild;
@@ -18,7 +18,7 @@ describe('Parent Tags', function(){
     });
 
     it('nested tags', function(){
-        var fn = eval(xjade.compile(fixture('tagNested.js-tpl'), {compile: 'js'}));
+        var fn = eval(xjade.compile(fixture('tagNested.xjade'), {compile: 'js'}));
         var root = document.createDocumentFragment();
         fn(root);
         expect(root.childNodes.length).toEqual(2);

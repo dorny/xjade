@@ -62,9 +62,8 @@ class CompilerHTML {
     }
 
     private require(filename) {
-        var ext = path.extname(filename);
-        if (ext==='.js-tpl' || ext==='.ts-tpl') {
-            var absolute = path.resolve(this.currentDir, filename);
+        var absolute = path.resolve(this.currentDir, filename);
+        if (path.extname(absolute)==='.xjade' || (fs.existsSync(absolute+'.xjade') && (absolute+='.xjade'))) {;
             return this.processTemplate(absolute);
         }
         else {
