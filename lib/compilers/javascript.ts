@@ -116,7 +116,7 @@ class Compiler implements XJadeCompiler {
         }
     }
 
-    private compileOuterCode(node: XJadeNode) {
+    private compileOuterCode(node: XJadeValueNode) {
         this.buffer.push(node.value);
     }
 
@@ -149,7 +149,7 @@ class Compiler implements XJadeCompiler {
         this.templateLineOffset = 0;
     }
 
-    private compileCode(node: XJadeNode, parent: string) {
+    private compileCode(node: XJadeValueNode, parent: string) {
         this.append(node.value);
     }
 
@@ -172,16 +172,13 @@ class Compiler implements XJadeCompiler {
 
         this.compileTagAttribues(tag.attributes, el);
 
-        if (tag.children) {
-            var children = this.flatmapTagBody(tag.children);
-            this.compileTagChidlren(children, el);
-        }
-
+        var children = this.flatmapTagBody(tag.children);
+        this.compileTagChidlren(children, el);
 
         this.append(parent+'.appendChild('+el+');');
     }
 
-    private compileTagAttribues(attributes: XJadeNode[], el: string) {
+    private compileTagAttribues(attributes: XJadeTagAttribute[], el: string) {
         attributes.forEach((attr) => {
             var name = attr.name.toLowerCase();
 
@@ -206,22 +203,19 @@ class Compiler implements XJadeCompiler {
     private compileTagChidlren(children: XJadeNode[], parent: string) {
         // set textContent rather ten appending text node (speed optimizaiton)
         if (children.length===1 && children[0].type==='Text') {
-            this.append(parent+'.textContent = '+this.escapeValue(children[0].value)+';');
+            var child = <XJadeValueNode> children[0];
+            this.append(parent+'.textContent = '+this.escapeValue(child.value)+';');
         }
         else {
             this.compileChildren(children, parent);
         }
     }
 
-    private compileTagBody(tag: XJadeTagNode, parent: string) {
-        tag.children.forEach( (child) => this.compileNode(child, parent) );
-    }
-
-    private compileText(node: XJadeNode, parent: string) {
+    private compileText(node: XJadeValueNode, parent: string) {
         this.append(parent+'.appendChild( document.createTextNode('+this.escapeValue(node.value)+'));');
     }
 
-    private compileComment(node: XJadeNode, parent: string) {
+    private compileComment(node: XJadeCommentNode, parent: string) {
         if (node.insert) {
             this.append(parent+'.appendChild( document.createComment('+q(node.value)+'));');
         }
@@ -236,7 +230,7 @@ class Compiler implements XJadeCompiler {
         this.indent--;
     }
 
-    private escapeValue(node: XJadeNode) {
+    private escapeValue(node: XJadeValueNode) {
         switch (node.type) {
             case 'String':return e(node.value);
             case 'Number': return q(node.value);
