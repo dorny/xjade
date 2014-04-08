@@ -134,7 +134,7 @@ export class RuntimeError extends CustomError {
             var end = Math.min(this.line+2, lines.length-1);
 
             var src = lines.slice(start, end)
-                .map((ln,i)=> { return (i+1===this.line ? '>':' ') + '   '+ln})
+                .map((ln,i)=> { return (i+start+1===this.line ? '>':' ') + '   '+ln})
                 .join('\n');
 
             text += '\n'+src;

@@ -17,10 +17,8 @@ export = CompilerHTML;
 class CompilerHTML {
 
     opts: XJadeOptions;
-    root: string;
     modules = {};
     sources = {};
-    currentDir;
     document;
 
     public compile(filename: string, opts: XJadeOptions) : string {
@@ -28,7 +26,7 @@ class CompilerHTML {
         this.opts = opts;
         this.document = utils.createDocument(opts.doctype);
 
-        this.root = path.dirname(path.resolve(filename));
+        filename = path.resolve(filename);
         var rootModule = this.processTemplate(filename);
 
         this.run(()=> rootModule.render(this.document, opts.data));
@@ -36,19 +34,21 @@ class CompilerHTML {
         return utils.serialize(this.document, opts.pretty);
     }
 
-    private processTemplate(filename) {
+    private processTemplate(filename: string) {
+
+        if (this.modules[filename]) {
+            return this.modules[filename];
+        }
+
         var relative = path.relative(process.cwd(), filename);
         var jsCompiler = new JSCompiler();
         var source = jsCompiler.compile(relative, this.opts);
         this.sources[filename] = source;
 
-        var prev = this.currentDir;
-        this.currentDir = path.dirname(filename);
-
         var module = {};
         this.run(()=> {
             vm.runInNewContext(source, {
-                require: this.require.bind(this),
+                require: this.require.bind(this, path.dirname(filename)),
                 console: console,
                 document: this.document,
                 exports: module,
@@ -56,17 +56,19 @@ class CompilerHTML {
         });
 
         this.modules[filename] = module;
-        this.currentDir = prev;
 
         return <any> module;
     }
 
-    private require(filename) {
+    private require(from, filename) {
         var ext = path.extname(filename);
-        var absolute = path.resolve(this.currentDir, filename);
+        var absolute = path.resolve(from, filename);
 
-        if (filename[0]!=='.' || ext==='.js' || fs.existsSync(absolute+'.js')) {
+        if (filename[0]!=='.') {
             return require(filename);
+        }
+        if (ext==='.js' || fs.existsSync(absolute+'.js')) {
+            return require(absolute);
         }
         else {
 
@@ -84,8 +86,10 @@ class CompilerHTML {
         }
         catch (e) {
             var match;
-            if (e.stack  &&  (match= RuntimeError.match(e.stack))!==null  && match.filename!==__filename)
-                throw new RuntimeError(e, match.filename, this.sources[match.filename], match.line, match.column);
+            if (e.stack  &&  (match= RuntimeError.match(e.stack))!==null  && match.filename!==__filename) {
+                var filename = path.relative(process.cwd(), match.filename);
+                throw new RuntimeError(e, filename, this.sources[match.filename], match.line, match.column);
+            }
             else {
                 throw new RuntimeError(e);
             }
