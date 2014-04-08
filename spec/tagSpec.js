@@ -55,6 +55,7 @@ describe('Tags', function(){
         expect(input.name).toEqual('name');
         expect(input.value).toEqual('value');
         expect(input.getAttribute('data-custom')).toEqual('custom');
+        expect(input.getAttribute('hidden')).toEqual('hidden');
     });
 
     it('create div with attributes assigned js code values', function(){

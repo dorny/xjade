@@ -177,7 +177,10 @@ class Compiler implements XJadeCompiler {
         attributes.forEach((attr) => {
             var name = attr.name.toLowerCase();
 
-            if (name in config.directAttrs) {
+            if (attr.value===null) {
+                this.append(el+'.setAttribute(' + q(name)+','+q(name)+');');
+            }
+            else if (name in config.directAttrs) {
                 if (attr.value.type==='Code')
                     this.append('if ('+this.EXPR_TOKEN+'= '+this.escapeValue(attr.value)+') '+el+'.'+config.directAttrs[name]+' = '+this.EXPR_TOKEN+';');
                 else
