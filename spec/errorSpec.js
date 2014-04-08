@@ -21,7 +21,7 @@ describe('Error reporting', function(){
         var fn = function(){ xjade.compile(filename, {compile: 'html'}); };
         var err = new errors.ParserError(
             'SyntaxError',
-            'Expected "-", CurlyBrackets: {...}, End of line, Tag, Tag body, Whitespace or end of input but "@" found.',
+            'Unexpected token: @div',
             filename,
             3,9
         );

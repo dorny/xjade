@@ -16,30 +16,45 @@ interface XJadeCompiler {
 }
 
 
-/**
-	Simplified representation of Any XJadeNode.
-	Specific node types will have different subset of listed fields.
-*/
+
+///////////////////////////////////////////////
+//
+//	XJadeNodes
+//
+///////////////////////////////////////////////
+
 interface XJadeNode {
 	type: string;
-	name?;
-	value?;
-	insert?: boolean;
-	children?: XJadeNode[];
 	line?: number;
 	column?: number;
 }
 
+interface XJadeValueNode extends XJadeNode {
+	value;
+}
+
 interface XJadeTemplateNode extends XJadeNode {
-	prefix: string;
-	args: XJadeNode;
-	body: XJadeNode;
+	name: string;
+	args: string;
+	body: XJadeValueNode;
 }
 
 interface XJadeTagNode extends XJadeNode {
 	name: string;
-	id: string;
+	id?: string;
 	classes: string[];
-	conditionalClasses: XJadeNode[];
-	attributes: XJadeNode[];
+	conditionalClasses: XJadeTagAttribute[];
+	attributes: XJadeTagAttribute[];
+	body?;
 }
+
+interface XJadeTagAttribute extends XJadeNode {
+	name: string;
+	value?: XJadeValueNode;
+}
+
+interface XJadeCommentNode extends XJadeValueNode {
+	insert: boolean;
+}
+
+

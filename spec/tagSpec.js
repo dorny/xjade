@@ -30,13 +30,6 @@ describe('Tags', function(){
         expect(root.firstChild.className).toEqual('class1 class2 class3 class4');
     });
 
-    it('create inline "#{div}"', function(){
-        var fn = eval(xjade.compile(fixture('tagInline.xjade'), {compile: 'js'}));
-        var root = document.createDocumentFragment();
-        fn(root);
-        expect(root.firstChild.tagName.toUpperCase()).toEqual('DIV');
-    });
-
     it('create direct child "div > span"', function(){
         var fn = eval(xjade.compile(fixture('tagChild.xjade'), {compile: 'js'}));
         var root = document.createDocumentFragment();

@@ -1,7 +1,7 @@
 exports.render = function @template() {
 
-    {
+    {{
         return "OK"
-    }
+    }}
 
 }

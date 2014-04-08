@@ -74,12 +74,16 @@ class Compiler implements XJadeCompiler {
 
     private nextEl(tagName: string) : string {
         this.elIndex++;
-        var name = tagName.replace(/[^\w$]/g, '_')
+        var name = tagName.replace(/[^\w$]/g, '')
         return '__'+tagName+'$'+this.elIndex;
     }
 
     private compileNode(node, parent) {
-        this.currentLineOffset = node.line;
+
+        if (node.line) {
+            this.currentLineOffset = node.line;
+        }
+
         switch (node.type) {
 
 
@@ -99,7 +103,7 @@ class Compiler implements XJadeCompiler {
                 this.compileTag(node, parent);
                 break;
 
-            case 'TagBody':
+            case 'TagBodyBlock':
                 this.compileTagBody(node, parent);
                 break;
 
@@ -116,7 +120,7 @@ class Compiler implements XJadeCompiler {
         }
     }
 
-    private compileOuterCode(node: XJadeNode) {
+    private compileOuterCode(node: XJadeValueNode) {
         this.buffer.push(node.value);
     }
 
@@ -148,7 +152,7 @@ class Compiler implements XJadeCompiler {
         this.templateLineOffset = 0;
     }
 
-    private compileCode(node: XJadeNode, parent: string) {
+    private compileCode(node: XJadeValueNode, parent: string) {
         this.append(node.value);
     }
 
@@ -165,15 +169,20 @@ class Compiler implements XJadeCompiler {
             classes+= '+('+this.escapeValue(cls.value)+' && '+q(' '+cls.name)+' || "")'
         });
 
-        if (classes!==q(''))
+        if (classes!==q('')) {
             this.append(el + '.className = ' + classes +';');
+        }
 
         this.compileTagAttribues(tag.attributes, el);
-        this.compileTagChidlren(tag.children, el);
+
+        if (tag.body) {
+            this.compileTagBody(tag.body, el);
+        }
+
         this.append(parent+'.appendChild('+el+');');
     }
 
-    private compileTagAttribues(attributes: XJadeNode[], el: string) {
+    private compileTagAttribues(attributes: XJadeTagAttribute[], el: string) {
         attributes.forEach((attr) => {
             var name = attr.name.toLowerCase();
 
@@ -195,34 +204,27 @@ class Compiler implements XJadeCompiler {
         });
     }
 
-    private compileTagChidlren(children: XJadeNode[], el: string) {
-        // if there are only one child and its type is "Text"
-        // set textContent rather ten appending text node (speed optimizaiton)
-        var skip = false;
-        if (children.length===1 && children[0].type==='TagBody') {
-            var body = children[0];
-            if (body.children.length===1) {
-                var first = body.children[0];
-                if (first.type==='Text') {
-                    this.append(el+'.textContent = '+this.escapeValue(first.value)+';');
-                    skip = true;
-                }
-            }
+    private compileTagBody(body, parent: string) {
+        switch (body.type) {
+            case 'Text':
+                this.append(parent+'.textContent = '+this.escapeValue(body.value)+';');
+                return;
+
+            case 'Tag':
+                this.compileTag(body, parent);
+                return;
+
+            case 'TagBodyBlock':
+                this.compileChildren(body.children, parent);
+                return;
         }
-
-        if (!skip)
-            this.compileChildren(children, el);
     }
 
-    private compileTagBody(tag: XJadeTagNode, parent: string) {
-        tag.children.forEach( (child) => this.compileNode(child, parent) );
-    }
-
-    private compileText(node: XJadeNode, parent: string) {
+    private compileText(node: XJadeValueNode, parent: string) {
         this.append(parent+'.appendChild( document.createTextNode('+this.escapeValue(node.value)+'));');
     }
 
-    private compileComment(node: XJadeNode, parent: string) {
+    private compileComment(node: XJadeCommentNode, parent: string) {
         if (node.insert) {
             this.append(parent+'.appendChild( document.createComment('+q(node.value)+'));');
         }
@@ -237,7 +239,7 @@ class Compiler implements XJadeCompiler {
         this.indent--;
     }
 
-    private escapeValue(node: XJadeNode) {
+    private escapeValue(node: XJadeValueNode) {
         switch (node.type) {
             case 'String':return e(node.value);
             case 'Number': return q(node.value);

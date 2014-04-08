@@ -9,21 +9,21 @@ var fixture = function(name){ return path.relative(process.cwd(), path.join(__di
 
 describe('Code', function(){
 
-    it('code block {...}', function(){
+    it('should append code block {...}', function(){
         var fn = eval(xjade.compile(fixture('codeBlock.xjade'), {compile: 'js'}));
         var root = document.createDocumentFragment();
         var result = fn(root);
         expect(result).toEqual("OK");
     });
 
-    it('codeLastElem', function(){
+    it('should have set lastly created element', function(){
         var fn = eval(xjade.compile(fixture('codeLastElem.xjade'), {compile: 'js'}));
         var root = document.createDocumentFragment();
         fn(root);
         expect(root.firstChild.textContent).toEqual('OK');
     });
 
-    it('codeLine', function(){
+    it('should append condition', function(){
         var fn = eval(xjade.compile(fixture('codeLine.xjade'), {compile: 'js'}));
         var root = document.createDocumentFragment();
         fn(root);

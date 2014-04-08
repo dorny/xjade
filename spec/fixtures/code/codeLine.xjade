@@ -2,8 +2,7 @@ exports.render = function @template() {
 
     - if (true) {
         "OK"
-    - }
-    - else {
+    - } else {
         "FAIL"
     - }
 }
