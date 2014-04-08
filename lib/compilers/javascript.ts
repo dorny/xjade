@@ -103,10 +103,6 @@ class Compiler implements XJadeCompiler {
                 this.compileTag(node, parent);
                 break;
 
-            case 'TagBody':
-                this.compileTagBody(node, parent);
-                break;
-
             case 'Text':
                 this.compileText(node, parent);
                 break;
@@ -131,6 +127,7 @@ class Compiler implements XJadeCompiler {
 
         try {
             var nodes = parserTemplate.parse(node.body.value);
+            var children = this.flatmapTagBody(nodes);
         } catch (e) {
             var column = (e.line===1)
                 ? e.column + node.body.column
@@ -145,7 +142,7 @@ class Compiler implements XJadeCompiler {
 
         this.append((node.name||'')+'('+this.PARENT_TOKEN+args+') {');
         this.append(this.INDENT_TOKEN+'var '+this.EL_TOKEN+', '+this.EXPR_TOKEN+';');
-        this.compileChildren(nodes, this.PARENT_TOKEN);
+        this.compileChildren(children, this.PARENT_TOKEN);
         this.append(this.INDENT_TOKEN+'return parent;');
         this.buffer.push('}');
 
@@ -174,7 +171,13 @@ class Compiler implements XJadeCompiler {
         }
 
         this.compileTagAttribues(tag.attributes, el);
-        this.compileTagChidlren(tag.children, el);
+
+        if (tag.children) {
+            var children = this.flatmapTagBody(tag.children);
+            this.compileTagChidlren(children, el);
+        }
+
+
         this.append(parent+'.appendChild('+el+');');
     }
 
@@ -200,23 +203,14 @@ class Compiler implements XJadeCompiler {
         });
     }
 
-    private compileTagChidlren(children: XJadeNode[], el: string) {
-        // if there are only one child and its type is "Text"
+    private compileTagChidlren(children: XJadeNode[], parent: string) {
         // set textContent rather ten appending text node (speed optimizaiton)
-        var skip = false;
-        if (children.length===1 && children[0].type==='TagBody') {
-            var body = children[0];
-            if (body.children.length===1) {
-                var first = body.children[0];
-                if (first.type==='Text') {
-                    this.append(el+'.textContent = '+this.escapeValue(first.value)+';');
-                    skip = true;
-                }
-            }
+        if (children.length===1 && children[0].type==='Text') {
+            this.append(parent+'.textContent = '+this.escapeValue(children[0].value)+';');
         }
-
-        if (!skip)
-            this.compileChildren(children, el);
+        else {
+            this.compileChildren(children, parent);
+        }
     }
 
     private compileTagBody(tag: XJadeTagNode, parent: string) {
@@ -255,4 +249,15 @@ class Compiler implements XJadeCompiler {
     private line() {
         return this.templateLineOffset + this.currentLineOffset -1;
     }
+
+    private flatmapTagBody(children) {
+        var result = []
+        for (var i = 0; i < children.length; i++) {
+            if (children[i].type==='TagBody')
+                result = result.concat(children[i].children);
+            else
+                result.push(children[i])
+        };
+        return result
+  }
 }
