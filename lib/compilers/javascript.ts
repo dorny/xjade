@@ -74,14 +74,18 @@ class Compiler implements XJadeCompiler {
 
     private nextEl(tagName: string) : string {
         this.elIndex++;
-        var name = tagName.replace(/[^\w$]/g, '_')
+        var name = tagName.replace(/[^\w$]/g, '')
         return '__'+tagName+'$'+this.elIndex;
     }
 
     private compileNode(node, parent) {
-        this.currentLineOffset = node.line;
-        switch (node.type) {
 
+        if (node.line!=null) {
+            this.currentLineOffset = node.line;
+        }
+
+
+        switch (node.type) {
 
             case 'OuterCode':
                 this.compileOuterCode(node);
@@ -165,8 +169,9 @@ class Compiler implements XJadeCompiler {
             classes+= '+('+this.escapeValue(cls.value)+' && '+q(' '+cls.name)+' || "")'
         });
 
-        if (classes!==q(''))
+        if (classes!==q('')) {
             this.append(el + '.className = ' + classes +';');
+        }
 
         this.compileTagAttribues(tag.attributes, el);
         this.compileTagChidlren(tag.children, el);

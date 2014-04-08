@@ -7,8 +7,3 @@ exports.table = function @template () {
             td "r1"
             td "r2"
 }
-
-
-exports.printName = function @template (name) {
-    ${name}
-}
