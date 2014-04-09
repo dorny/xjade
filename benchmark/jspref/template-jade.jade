@@ -1,0 +1,46 @@
+
+.header
+    h1 Welcome to XJade performance benchmars!
+
+#content
+    h2 How about creating some elements?
+    div
+        span Lorem ipsum
+        span
+            | Oh look!
+            a(href="www.google.com") link
+            | to Google!
+    div
+        | How about some lists?
+        if self.show
+            ul
+                li: span item
+                li: span item
+                li: span item
+                li: span item
+                li: span item
+                li: span item
+
+    div
+        | How about tables?
+        table
+            each value,key in self.items
+                tr
+                    td= key
+                    td= value
+
+    div
+        How about forms?
+        form
+            label label
+            input(name=self.iname, type="text")
+
+            label label
+            input(name=self.iname, type="text")
+
+            label label
+            input(name=self.iname, type="text")
+
+.footer
+    div Thanks for testing
+
