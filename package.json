@@ -1,7 +1,7 @@
 {
   "name": "xjade",
 
-  "version": "0.0.15",
+  "version": "0.1.0",
 
   "description": "XJade template engine",
 
@@ -46,7 +46,6 @@
   },
 
   "dependencies": {
-    "lodash": "2.4.x",
     "commander": "2.2.x",
     "html": "0.0.7",
     "jsdom-little": "0.10.x"

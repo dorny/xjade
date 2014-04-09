@@ -10,7 +10,6 @@ var IOError = errors.IOError;
 var parserSource = require('../parser/source');
 var parserTemplate = require('../parser/template');
 
-var _ = require('lodash');
 var q = utils.quote;
 var e = utils.escape;
 
