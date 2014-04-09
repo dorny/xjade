@@ -8,6 +8,13 @@
 XJade is a new template language which accelerates and simplifies building complex dynamic user interfaces in JavaScript.  
 
 
+It works like:
+
+1. Write your view code which dynamically generates HTML with XJade tempaltes into .xjade files.
+1. Watch and compile your .xjade files with grunt.
+1. Use any module loader or plain script tags to include your compiled sources.
+1. Call generated functions with root node as its first argument
+
 
 ## Table of Contents
 
@@ -20,6 +27,7 @@ XJade is a new template language which accelerates and simplifies building compl
     * [Template](#template)
     * [Tag](#tag)
         * [Tag Attributes](#tag-attributes)
+        * [Conditional Classes](#conditional-classes)
         * [Text](#text)
         * [Child Tag](#child-tag)
         * [Inline Tag](#inline-tag)
@@ -28,7 +36,6 @@ XJade is a new template language which accelerates and simplifies building compl
         * [Line](#line)
         * [Block](#block)
     * [Comments](#comments)
-* [Client side usage](#server-side-usage)
 * [Server side usage](#server-side-usage)
 * [License](#license)
 * [Acknowledgements](#acknowledgements)
@@ -38,8 +45,9 @@ XJade is a new template language which accelerates and simplifies building compl
 ##  Features
 
 * **Readable short-hand HTML** - XJade uses indented CSS selectors to describe node trees.
-* **DOM structure** - Elements are created using standard browser DOM API.
 * **Embedded into JavaScript** - Templates are written inside JavaScript files.
+* **DOM structure** - Elements are created using standard browser DOM API.
+* **Client side performance** - see this [benchmark](http://jsperf.com/xjade-benchmarks). 
 * **Server side support** - Generate your static HTML files with XJade and never write HTML again.
 * **Easy integration** - works with AMD/CommonJS modules, TypeScript or any binding library.
 * **Simplicity** - It's only about CSS selectors syntax and JavaScript, not a whole new language.
@@ -175,25 +183,38 @@ Attribute is set using `name=value` syntax and individual attributes are delimit
 Value can be one of:
 * String - single or double quoted
 * Number - only positive integer
-* Code - JavaScript expression inside curly brackets
+* Expression - any JavaScript expression
 
 Example:
 ```
 input[ name="username" type="text" ]
 span[ data-rating=5 ]
-a[ href={project.homepage} ]
+a[ href=project.homepage ]
+span[ data-count=(user.count+1) ]
 ```
 
 If attribute value is determined by JavaScript expression, attribute will be set only if expression evalutes to true.
 
 
+#### Conditonal Classes
+It's possible to set specific class on tag only if some expression evaluates to true.
+Syntax for this is same as with attributes, except class name starts with ".".
+
+Example:
+```
+div[ .active=tab.active ]
+```
+
+
+
 #### Text
 Text nodes are created with:  
-* single quotes
-* double quotes
+* Single quotes
+* Double quotes
 * JavaScript expresion as `${ … }`
+* Tag text assignment as `tag= …`
 
-Strings can be multiline and you don't have to explicitly escape it.
+Strings (outside JS expression) can be multiline and you don't have to explicitly escape it.
 Do not use HTML codes like `&gt;` or `&nbsp`, they won't work.
 Instead use character directly (`<`) or escape/unicode sequence like `\u00a0` for non-breaking space.
 
@@ -205,6 +226,7 @@ Example:
 "multi line
 string"
 ${user.name}
+div= user.name
 ```
 
 #### Child Tag
@@ -261,8 +283,8 @@ Example:
 span "Lorem Ipsum " ${user.name} " Lorem Ipsum"
 
 div
-    "Name: " ${user.name} #{br}
-    "Address: " ${user.address} #{br}
+    "Lorem Ipsum " ${user.name}     " Lorem Ipsum"
+    "Lorem Ipsum " ${user.address}  " Lorem Ipsum"
 ```
 
 
@@ -295,7 +317,7 @@ Example:
 Example:
 ```
 ul
-    - users.forEach( function(user, i){
+    - users.forEach( function(user, i) {
         li ${user.name}      
     - });
 ```
@@ -305,7 +327,7 @@ ul
 
 #### Block
 
-Arbitrary multiline code block can be written inside curly brackets `{ … }`.
+Multiline block with JavaScript code can be written inside curly brackets `{ … }`.
 
 Example:
 ```
@@ -329,21 +351,13 @@ function @template(clickHandler, exports) {
 * Block HTML: `/*> this will be inserted as HTML comment */`
 
 
-## Client side usage
-
-1. Write your view code which generates and stores nodes with XJade tempaltes into .xjade files.
-1. Watch and compile your .xjade files with grunt
-1. Use any module loader or simple use script tags to include your compiled sources.
-1. Call generated functions with some root node as its first argument
-
-
 
 ## Server side usage
 
 Althought XJade primary target is Browser, it's possible to use it on server side as static HTML files generator.
 Set XJade `compile` option to `html` to compile and execute input file and all its includes to single HTML output.
 Your input template must have exported `render` function.
-Data object (see XJade compiler options) will be passed as first argument.
+Data object (see XJade compiler options) will be passed as its first argument.
 
 Use cases:
 * Generate index.html for single page application with same syntax as client side templates
@@ -359,7 +373,7 @@ exports.render = function @template () {
             script[src="app.js"]
             link[href="style.css" rel="stylesheet" type="text/css"]
         body
-            - content(el);
+            - content.render(el);
 };
 ```
 
