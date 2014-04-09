@@ -403,9 +403,9 @@ MIT
 
 ## Acknowledgements
 
-### Maindata
-Developing firts prototype of XJade was supported by [MAINDATA](http://www.maindata.info/)  
-![MAINDATA](https://dl.dropboxusercontent.com/u/40395608/MD-logo.png)
+### MAINDATA
+Developing firts prototype of XJade was supported by [MAINDATA](http://www.maindatainc.com).  
+[![MAINDATA](https://dl.dropboxusercontent.com/u/40395608/MD-logo.png)](http://www.maindatainc.com)
 
 
 ### Jade
