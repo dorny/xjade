@@ -196,7 +196,7 @@ span[ data-count=(user.count+1) ]
 If attribute value is determined by JavaScript expression, attribute will be set only if expression evalutes to true.
 
 
-#### Conditonal Classes
+#### Conditional Classes
 It's possible to set specific class on tag only if some expression evaluates to true.
 Syntax for this is same as with attributes, except class name starts with ".".
 
