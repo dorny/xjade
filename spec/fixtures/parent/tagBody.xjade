@@ -1,4 +1,5 @@
 exports.render = function @template() {
-    div "text1"
+    div
+        "text1"
         "text2"
 }
