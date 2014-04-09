@@ -47,7 +47,13 @@ class Compiler implements XJadeCompiler {
             throw new IOError(e);
         }
 
-        var nodes = parserSource.parse(template);
+        try {
+            var nodes = parserSource.parse(template);
+        }
+        catch (e) {
+            throw new ParserError(e.name, e.message, this.filename, e.line, e.column, e);
+        }
+
         nodes.forEach((node)=> this.compileNode(node, null));
         return this.buffer.join('');
     }

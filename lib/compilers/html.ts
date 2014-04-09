@@ -29,7 +29,7 @@ class CompilerHTML {
         filename = path.resolve(filename);
         var rootModule = this.processTemplate(filename);
 
-        this.run(()=> rootModule.render(this.document, opts.data));
+        this.run(()=> rootModule.render(this.document, opts.data), filename);
 
         return utils.serialize(this.document, opts.pretty);
     }
@@ -53,7 +53,7 @@ class CompilerHTML {
                 document: this.document,
                 exports: module,
             }, filename);
-        });
+        }, filename);
 
         this.modules[filename] = module;
 
@@ -80,7 +80,7 @@ class CompilerHTML {
         }
     }
 
-    private run(fn) {
+    private run(fn, fromFileName?) {
         try {
             return fn()
         }
@@ -91,7 +91,10 @@ class CompilerHTML {
                 throw new RuntimeError(e, filename, this.sources[match.filename], match.line, match.column);
             }
             else {
-                throw new RuntimeError(e);
+                if (fromFileName)
+                    throw new RuntimeError(e, path.relative(process.cwd(), fromFileName));
+                else
+                 throw new RuntimeError(e);
             }
         }
     }
