@@ -61,7 +61,7 @@ XJade is a new template language which accelerates and simplifies building compl
 1. Write your view code which dynamically generates DOM structures with XJade templates into .xjade files.
 1. Watch and compile your .xjade files with grunt.
 1. Use any module loader or plain script tags to include your compiled sources.
-1. Call compiled XJade functions with some root node as its first argument.
+1. Call compiled XJade functions with some root node as their first argument.
 
 
 
