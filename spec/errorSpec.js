@@ -21,7 +21,7 @@ describe('Error reporting', function(){
         var fn = function(){ xjade.compile(filename, {compile: 'html'}); };
         var err = new errors.ParserError(
             'SyntaxError',
-            'Unexpected token: @div',
+            'Unexpected token: &div',
             filename,
             3,9
         );

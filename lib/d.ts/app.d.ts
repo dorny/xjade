@@ -56,4 +56,12 @@ interface XJadeCommentNode extends XJadeValueNode {
 	insert: boolean;
 }
 
+interface XJadeDirectiveNode extends XJadeNode{
+	name: string;
+	key?: string;
+	value?: string;
+	expr?: string;
+	children: XJadeNode[];
+}
+
 

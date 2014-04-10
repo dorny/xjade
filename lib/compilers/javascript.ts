@@ -25,11 +25,11 @@ class Compiler implements XJadeCompiler {
 
     buffer: string[] = [];
 
-    indent: number = 0;
+    indent: number;
     indentToken;
     indentTokenLength;
 
-    elIndex: number = -1;
+    elIndex: number;
 
     templateLineOffset = 0;
     currentLineOffset = 0;
@@ -116,6 +116,10 @@ class Compiler implements XJadeCompiler {
                 this.compileCode(node, parent);
                 break;
 
+            case 'Directive':
+                this.compileDirective(node, parent);
+                break;
+
             case 'Tag':
                 this.compileTag(node, parent);
                 break;
@@ -152,6 +156,8 @@ class Compiler implements XJadeCompiler {
         this.currentLineOffset = 0;
         this.lastPrintedLineOffset = 0;
 
+        this.elIndex = 0;
+
         try {
             var nodes = parserTemplate.parse(node.body.value);
         } catch (e) {
@@ -179,6 +185,70 @@ class Compiler implements XJadeCompiler {
         this.append(ri(node.value, node.column));
     }
 
+    private compileDirective(node: XJadeDirectiveNode, parent: string) {
+        switch (node.name) {
+            case 'If':
+                this.append('if ('+node.expr+') {');
+                this.compileChildren(node.children, parent);
+                this.append('}');
+                break;
+
+            case 'Else':
+                this.append('else {');
+                this.compileChildren(node.children, parent);
+                this.append('}');
+                break;
+
+            case 'ElseIf':
+                this.append('else if ('+node.expr+') {');
+                this.compileChildren(node.children, parent);
+                this.append('}');
+                break;
+
+            case 'Each':
+                var tmp = this.nextEl(this.EXPR_TOKEN);
+                this.append(tmp+' = '+ node.expr+';');
+                var key = node.key || this.nextEl('i');
+                var len = this.nextEl('l');
+                this.append('for (var '+key+'=0, '+len+'='+tmp+'.length; '+key+'<'+len+'; ++'+key+') {')
+                this.append(this.indentToken+'var '+node.value+' = '+tmp+'['+key+'];');
+                this.compileChildren(node.children, parent);
+                this.append('}');
+                break;
+
+            case 'For':
+                var tmp = this.nextEl(this.EXPR_TOKEN);
+                this.append(tmp+' = '+ node.expr+';');
+                var key = node.key || this.nextEl('i');
+                this.append('for (var '+key+' in '+tmp+') {')
+                this.append(this.indentToken+'var '+node.value+' = '+tmp+'['+key+'];');
+                this.compileChildren(node.children, parent);
+                this.append('}');
+                break;
+
+            case 'While':
+                this.append('while ('+node.expr+') {')
+                this.compileChildren(node.children, parent);
+                this.append('}');
+
+            case 'Switch':
+                this.append('switch ('+node.expr+') {')
+                this.compileChildren(node.children, parent);
+                this.append('}');
+                break;
+
+            case 'Case':
+                this.append('case '+node.expr+':');
+                this.compileChildren(node.children, parent);
+                this.append(this.indentToken+'break;');
+                break;
+
+            default:
+                throw new ICError("Unknown Directive name: "+node.name, this.filename, this.line(), null);
+        }
+    }
+
+
     private compileTag(tag: XJadeTagNode, parent: string) {
         var el = this.nextEl(tag.name);
         this.append('var '+el+' = '+this.EL_TOKEN+' = document.createElement('+q(tag.name)+');');
@@ -197,7 +267,7 @@ class Compiler implements XJadeCompiler {
         }
 
         this.compileTagAttribues(tag.attributes, el);
-        this.compileChildren(tag.children, el);
+        this.compileChildren(tag.children, el, true);
         this.append(parent+'.appendChild('+el+');');
     }
 
@@ -223,10 +293,10 @@ class Compiler implements XJadeCompiler {
         });
     }
 
-    private compileChildren(children: XJadeNode[], parent: string) {
+    private compileChildren(children: XJadeNode[], parent: string, isSafeParent?) {
         children = this.optimizeChildren(children);
         // set textContent rather ten appending text node (speed optimizaiton)
-        if (children.length===1 && children[0].type==='Text') {
+        if (isSafeParent && children.length===1 && children[0].type==='Text') {
             var child = <XJadeValueNode> children[0];
             this.append(parent+'.textContent = '+this.escapeValue(child)+';');
         }
