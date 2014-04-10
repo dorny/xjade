@@ -102,7 +102,6 @@ class Compiler implements XJadeCompiler {
             this.currentLineOffset = node.line;
         }
 
-
         switch (node.type) {
 
             case 'OuterCode':
@@ -155,7 +154,6 @@ class Compiler implements XJadeCompiler {
 
         try {
             var nodes = parserTemplate.parse(node.body.value);
-            var children = this.flatmapTagBody(nodes);
         } catch (e) {
             var column = (e.line===1)
                 ? e.column + node.body.column
@@ -170,7 +168,7 @@ class Compiler implements XJadeCompiler {
 
         this.buffer.push((node.name||'')+'('+this.PARENT_TOKEN+args+') {\n');
         this.append(this.indentToken+'var '+this.EL_TOKEN+', '+this.EXPR_TOKEN+';');
-        this.compileChildren(children, this.PARENT_TOKEN);
+        this.compileChildren(nodes, this.PARENT_TOKEN);
         this.append(this.indentToken+'return parent;');
         this.append('}', true);
 
@@ -199,10 +197,7 @@ class Compiler implements XJadeCompiler {
         }
 
         this.compileTagAttribues(tag.attributes, el);
-
-        var children = this.flatmapTagBody(tag.children);
-        this.compileTagChidlren(children, el);
-
+        this.compileChildren(tag.children, el);
         this.append(parent+'.appendChild('+el+');');
     }
 
@@ -228,14 +223,17 @@ class Compiler implements XJadeCompiler {
         });
     }
 
-    private compileTagChidlren(children: XJadeNode[], parent: string) {
+    private compileChildren(children: XJadeNode[], parent: string) {
+        children = this.optimizeChildren(children);
         // set textContent rather ten appending text node (speed optimizaiton)
         if (children.length===1 && children[0].type==='Text') {
             var child = <XJadeValueNode> children[0];
             this.append(parent+'.textContent = '+this.escapeValue(child)+';');
         }
         else {
-            this.compileChildren(children, parent);
+            this.indent++;
+            children.forEach( (child) => this.compileNode(child, parent) );
+            this.indent--;
         }
     }
 
@@ -250,12 +248,6 @@ class Compiler implements XJadeCompiler {
         else {
             this.append('/* '+node.value+' */')
         }
-    }
-
-    private compileChildren(nodes: XJadeNode[], parent: string) {
-        this.indent++;
-        nodes.forEach( (child) => this.compileNode(child, parent) );
-        this.indent--;
     }
 
     private escapeValue(node: XJadeValueNode) {
@@ -273,13 +265,47 @@ class Compiler implements XJadeCompiler {
     }
 
     private flatmapTagBody(children) {
-        var result = []
-        for (var i = 0; i < children.length; i++) {
-            if (children[i].type==='TagBody')
-                result = result.concat(children[i].children);
+        var result = [];
+        children.forEach((child)=> {
+            if (child.type==='TagBody')
+                result = result.concat(child.children);
             else
-                result.push(children[i])
-        };
-        return result
-  }
+                result.push(child)
+        });
+        return result;
+    }
+
+    private concatText(children) {
+        var code = children.map((text)=> this.escapeValue(text));
+
+        var result = children[0];
+        result.value.type = 'Code';
+        result.value.value = code.join('+');
+        return result;
+    }
+
+    private optimizeChildren(children) {
+        children = this.flatmapTagBody(children);
+        var result = [];
+        var textBuffer = [];
+
+        children.forEach((child)=> {
+            if (child.type==='Text') {
+                textBuffer.push(child);
+            }
+            else {
+                if (textBuffer.length) {
+                    result.push(this.concatText(textBuffer));
+                    textBuffer = [];
+                }
+                result.push(child);
+            }
+        });
+
+        if (textBuffer.length) {
+            result.push(this.concatText(textBuffer));
+        }
+
+        return result;
+    }
 }

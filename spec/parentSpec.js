@@ -7,17 +7,17 @@ var document = utils.createDocument();
 var fixture = function(name){ return path.relative(process.cwd(), path.join(__dirname,'fixtures','parent',name)); };
 
 
-describe('Parent Tags', function(){
+describe('Parent Tag', function(){
 
-    it('tag body', function(){
+    it('should have body', function(){
         var fn = eval(xjade.compile(fixture('tagBody.xjade'), {compile: 'js'}));
         var root = document.createDocumentFragment();
         fn(root);
         var div = root.firstChild;
-        expect(div.childNodes.length).toEqual(2);
+        expect(div.childNodes.length).toEqual(1);
     });
 
-    it('nested tags', function(){
+    it('should have nested tags', function(){
         var fn = eval(xjade.compile(fixture('tagNested.xjade'), {compile: 'js'}));
         var root = document.createDocumentFragment();
         fn(root);
