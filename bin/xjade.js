@@ -16,6 +16,11 @@ program
 program.parse(process.argv);
 
 var files = program.args;
+
+if (files.length===0) {
+  program.help();
+}
+
 var data;
 if (program.data) {
   if (fs.existsSync(program.data))
