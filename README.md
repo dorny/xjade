@@ -3,23 +3,25 @@
 
 **WARNING - THIS PROJECT IS AT AN EARLY DEVELOPMENT STAGE**
 
-# XJade
+# XJade - DOM Templating Engine
 
 XJade is a new template language which accelerates and simplifies building complex dynamic user interfaces in JavaScript.  
 
 
-It works like:
-
-1. Write your view code which dynamically generates HTML with XJade tempaltes into .xjade files.
-1. Watch and compile your .xjade files with grunt.
-1. Use any module loader or plain script tags to include your compiled sources.
-1. Call generated functions with root node as its first argument
+##  Features
+* **Readable short-hand HTML** - XJade uses indented CSS selectors to describe node trees.
+* **Embedded into JavaScript** - Templates are written inside JavaScript files.
+* **DOM structure** - Elements are created using standard browser DOM API.
+* **Client side performance** - see this [benchmark](http://jsperf.com/xjade-benchmarks). 
+* **Server side support** - Generate your static HTML files with XJade and never write HTML again.
+* **Easy integration** - works with AMD/CommonJS modules, TypeScript or any binding library.
+* **Simplicity** - It's only about CSS selectors syntax and JavaScript, not a whole new language. 
+* **Readable generated code** - Indented with mapping to original line numbers.
 
 
 ## Table of Contents
-
-* [Features](#features)
 * [Why Use XJade?](#why-use-xjade)
+* [How to work with XJade?](#how-to-work-with-xjade)
 * [Instalation](#instalation)
     * [Grunt plugin](#grunt-plugin-recommended)
     * [IDE support](#ide-support)
@@ -41,19 +43,6 @@ It works like:
 * [Acknowledgements](#acknowledgements)
 
 
-
-##  Features
-
-* **Readable short-hand HTML** - XJade uses indented CSS selectors to describe node trees.
-* **Embedded into JavaScript** - Templates are written inside JavaScript files.
-* **DOM structure** - Elements are created using standard browser DOM API.
-* **Client side performance** - see this [benchmark](http://jsperf.com/xjade-benchmarks). 
-* **Server side support** - Generate your static HTML files with XJade and never write HTML again.
-* **Easy integration** - works with AMD/CommonJS modules, TypeScript or any binding library.
-* **Simplicity** - It's only about CSS selectors syntax and JavaScript, not a whole new language.
-
-
-
 ## Why Use XJade?
 
 * DOM API is too verbose.
@@ -65,6 +54,14 @@ It works like:
     * conditionals, loops etc. uses their own special syntax instead of plain JavaScript
     * uses mixins, partials, blocks and other own constructs instead of simple function calls
     * force you to have only one template per file with limited options for module loading method.
+
+
+## How to work with XJade?:
+
+1. Write your view code which dynamically generates DOM structures with XJade templates into .xjade files.
+1. Watch and compile your .xjade files with grunt.
+1. Use any module loader or plain script tags to include your compiled sources.
+1. Call compiled XJade functions with some root node as its first argument.
 
 
 
@@ -142,7 +139,7 @@ Reserved variable names inside template function:
 * `parent`: root element, where child nodes will be appended
 * `__el`: holds reference to lastly created element node
 * `__expr`: temporary expression result storage
-* names like: `__div$1`: temporary references to created nodes
+* names like: `div$1`: temporary references to created nodes
 
 When you call template function, first argument must be Node where child nodes will be appended.
 Template function does not clear its root node before starts processing.
@@ -214,17 +211,19 @@ Text nodes are created with:
 * JavaScript expresion as `${ … }`
 * Tag text assignment as `tag= …`
 
-Strings (outside JS expression) can be multiline and you don't have to explicitly escape it.
-Do not use HTML codes like `&gt;` or `&nbsp`, they won't work.
-Instead use character directly (`<`) or escape/unicode sequence like `\u00a0` for non-breaking space.
+Don't worry about escaping HTML special chars, all text will be automatically escaped by DOM itself.
+You can also use any escape/unicode sequence exactly same way like in JavaScript.
+Quoted text can also span accross multiple lines.
+In that case, leading whitespaces up to the indentation level of text node itsef will be removed.
 
 Example:
 ```
 'some text'
 "some other text"
 'text with newline character at the end \n'
-"multi line
-string"
+"multiline
+ string
+"
 ${user.name}
 div= user.name
 ```
@@ -260,7 +259,8 @@ html
         script[ src="app.js" type="text/javascript" ]
     body
         #content
-```        
+            'Lorem ipsum'        
+```
 
 renders as:
 ```html
@@ -269,14 +269,14 @@ renders as:
         <script src="app.js" type="text/javascript"></script>
     </head>
     <body>
-        <div id="content"></div>
+        <div id="content">Lorem ipsum</div>        
     </body>
 </html>
 ```
 
 Multiple text nodes and inline child tags can be placed on a single line.
-Text and inline childs can be placed on a same line as their parent tag
-or any of the following lines which are more indented as their parent tag.
+These body elemenets can be either on the same line as their parent tag
+or on the following lines which are more indented as their parent tag.
 
 Example:
 ```
