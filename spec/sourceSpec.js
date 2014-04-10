@@ -5,7 +5,7 @@ var xjade = require('../lib/xjade');
 var fixture = function(name){ return path.relative(process.cwd(), path.join(__dirname,'fixtures','source',name)); };
 
 
-describe('Template extraction', function(){
+describe('Source compilation', function(){
 
     it('should not change source without templates', function(){
         var filename = fixture('none.xjade');

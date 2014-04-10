@@ -15,6 +15,8 @@ function jsodm() {
     return _jsdom;
 }
 
+
+
 export function quote(str: string) {
     return "'" +escape(str).replace(/'/gm, "\\'") + "'";
 }
@@ -26,6 +28,32 @@ export function escape(str: string) {
         .replace(/\u2028/gm,'\u2028')
         .replace(/\u2029/gm,'\u2029');
 }
+
+export function splitByLine(str: string) {
+    return str.split(/[\n\u0085\u2028\u2029]|\r\n?/);
+}
+
+export function removeIndent(str: string, indent: number) {
+    var re = new RegExp('^\\s{1,'+indent+'}');
+    return splitByLine(str).map((ln,i)=> {
+        if (i===0)
+            return ln;
+        else
+            return ln.replace(re,'');
+    }).join('\n');
+}
+
+export function addIndent(str: string, indent, token) {
+    var space = '';
+    for(var i=0; i<indent; i++) {
+        space += token;
+    }
+
+    return splitByLine(str).map((ln)=> {
+        return space+ln;
+    }).join('\n');
+}
+
 
 
 export function createDocument(doctype) {

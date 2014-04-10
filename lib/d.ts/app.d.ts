@@ -48,9 +48,8 @@ interface XJadeTagNode extends XJadeNode {
 	children: XJadeNode[];
 }
 
-interface XJadeTagAttribute extends XJadeNode {
+interface XJadeTagAttribute extends XJadeValueNode {
 	name: string;
-	value?: XJadeValueNode;
 }
 
 interface XJadeCommentNode extends XJadeValueNode {

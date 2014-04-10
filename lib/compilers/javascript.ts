@@ -9,9 +9,11 @@ var IOError = errors.IOError;
 
 var parserSource = require('../parser/source');
 var parserTemplate = require('../parser/template');
+var detectIndent = require('detect-indent');
 
 var q = utils.quote;
 var e = utils.escape;
+var ri = utils.removeIndent;
 
 export = Compiler;
 
@@ -24,6 +26,9 @@ class Compiler implements XJadeCompiler {
     buffer: string[] = [];
 
     indent: number = 0;
+    indentToken;
+    indentTokenLength;
+
     elIndex: number = -1;
 
     templateLineOffset = 0;
@@ -32,20 +37,33 @@ class Compiler implements XJadeCompiler {
 
     PARENT_TOKEN = 'parent';
     EL_TOKEN = 'el';
-    NEXT_EL_TOKEN = '__el$';
+    NEXT_EL_TOKEN = 'el$';
     EXPR_TOKEN = '__expr';
-    INDENT_TOKEN = '  ';
+
 
     public compile(filename: string, opts: XJadeOptions) : string {
         this.filename = filename;
         this.opts = opts;
 
+        // Read template file
         try {
             var template = opts.readFile(filename);
         } catch(e){
             throw new IOError(e);
         }
 
+        // Indent settings
+        this.indent = 0;
+        this.indentToken = detectIndent(template) || '  ';
+        if (this.indentToken=='\t') {
+            this.indentTokenLength = 4;
+        }
+        else {
+            this.indentTokenLength = this.indentToken.length;
+        }
+
+
+        // Parse source
         try {
             var nodes = parserSource.parse(template);
         }
@@ -57,30 +75,25 @@ class Compiler implements XJadeCompiler {
         return this.buffer.join('');
     }
 
-    public append(str) {
+    public append(str, noNewLine?) {
         if (this.currentLineOffset !== this.lastPrintedLineOffset) {
             this.lastPrintedLineOffset = this.currentLineOffset;
             var lineComment = '/* LINE: '+(this.templateLineOffset+this.currentLineOffset-1)+' */\n';
-            this.buffer.push('\n'+this.makeIndent()+lineComment);
+            str = lineComment + str;
         }
 
-        str = str.split('\n').map((ln)=> this.makeIndent()+ln ).join('\n') + '\n';
+        str = utils.addIndent(str, this.indent, this.indentToken);
+        if (!noNewLine) {
+            str = str+'\n';
+        }
+
         this.buffer.push(str);
-    }
-
-    private makeIndent() {
-        var space = '';
-        for(var i=0; i<this.indent; i++) {
-            space += this.INDENT_TOKEN;
-        }
-
-        return space;
     }
 
     private nextEl(tagName: string) : string {
         this.elIndex++;
         var name = tagName.replace(/[^\w$]/g, '')
-        return '__'+tagName+'$'+this.elIndex;
+        return name+'$'+this.elIndex;
     }
 
     private compileNode(node, parent) {
@@ -123,6 +136,16 @@ class Compiler implements XJadeCompiler {
 
     private compileOuterCode(node: XJadeValueNode) {
         this.buffer.push(node.value);
+
+        // Detect indentation level of template
+        var index =  node.value.lastIndexOf('\n');
+        if (index) {
+            var length = node.value.slice(index).replace(/((\bvar)?\s*[\w$]+\s*[:=]\s*)?function\s+$/,'').length;
+            this.indent = Math.floor(length / this.indentTokenLength);
+        }
+        else {
+            this.indent = 0;
+        }
     }
 
     private compileTemplate(node: XJadeTemplateNode) {
@@ -145,17 +168,17 @@ class Compiler implements XJadeCompiler {
             ? ','+node.args
             : '';
 
-        this.append((node.name||'')+'('+this.PARENT_TOKEN+args+') {');
-        this.append(this.INDENT_TOKEN+'var '+this.EL_TOKEN+', '+this.EXPR_TOKEN+';');
+        this.buffer.push((node.name||'')+'('+this.PARENT_TOKEN+args+') {\n');
+        this.append(this.indentToken+'var '+this.EL_TOKEN+', '+this.EXPR_TOKEN+';');
         this.compileChildren(children, this.PARENT_TOKEN);
-        this.append(this.INDENT_TOKEN+'return parent;');
-        this.buffer.push('}');
+        this.append(this.indentToken+'return parent;');
+        this.append('}', true);
 
         this.templateLineOffset = 0;
     }
 
     private compileCode(node: XJadeValueNode, parent: string) {
-        this.append(node.value);
+        this.append(ri(node.value, node.column));
     }
 
     private compileTag(tag: XJadeTagNode, parent: string) {
@@ -168,7 +191,7 @@ class Compiler implements XJadeCompiler {
 
         var classes =  q(tag.classes.join(' '));
         tag.conditionalClasses.forEach((cls)=> {
-            classes+= '+('+this.escapeValue(cls.value)+' && '+q(' '+cls.name)+' || "")'
+            classes+= '+('+this.escapeValue(cls)+' && '+q(' '+cls.name)+' || "")'
         });
 
         if (classes!==q('')) {
@@ -192,15 +215,15 @@ class Compiler implements XJadeCompiler {
             }
             else if (name in config.directAttrs) {
                 if (attr.value.type==='Code')
-                    this.append('if ('+this.EXPR_TOKEN+'= '+this.escapeValue(attr.value)+') '+el+'.'+config.directAttrs[name]+' = '+this.EXPR_TOKEN+';');
+                    this.append('if ('+this.EXPR_TOKEN+'= '+this.escapeValue(attr)+') '+el+'.'+config.directAttrs[name]+' = '+this.EXPR_TOKEN+';');
                 else
-                    this.append(el+'.'+config.directAttrs[name]+' = '+this.escapeValue(attr.value)+';');
+                    this.append(el+'.'+config.directAttrs[name]+' = '+this.escapeValue(attr)+';');
             }
             else {
                 if (attr.value.type==='Code')
-                    this.append('if ('+this.EXPR_TOKEN+'= '+this.escapeValue(attr.value)+') '+el+'.setAttribute(' + q(name)+', ' + this.EXPR_TOKEN+');');
+                    this.append('if ('+this.EXPR_TOKEN+'= '+this.escapeValue(attr)+') '+el+'.setAttribute(' + q(name)+', ' + this.EXPR_TOKEN+');');
                 else
-                    this.append(el+'.setAttribute(' + q(name)+', ' +  this.escapeValue(attr.value) + ');');
+                    this.append(el+'.setAttribute(' + q(name)+', ' +  this.escapeValue(attr) + ');');
             }
         });
     }
@@ -209,7 +232,7 @@ class Compiler implements XJadeCompiler {
         // set textContent rather ten appending text node (speed optimizaiton)
         if (children.length===1 && children[0].type==='Text') {
             var child = <XJadeValueNode> children[0];
-            this.append(parent+'.textContent = '+this.escapeValue(child.value)+';');
+            this.append(parent+'.textContent = '+this.escapeValue(child)+';');
         }
         else {
             this.compileChildren(children, parent);
@@ -217,7 +240,7 @@ class Compiler implements XJadeCompiler {
     }
 
     private compileText(node: XJadeValueNode, parent: string) {
-        this.append(parent+'.appendChild( document.createTextNode('+this.escapeValue(node.value)+'));');
+        this.append(parent+'.appendChild( document.createTextNode('+this.escapeValue(node)+'));');
     }
 
     private compileComment(node: XJadeCommentNode, parent: string) {
@@ -236,12 +259,12 @@ class Compiler implements XJadeCompiler {
     }
 
     private escapeValue(node: XJadeValueNode) {
-        switch (node.type) {
-            case 'String':return e(node.value);
-            case 'Number': return q(node.value);
-            case 'Code': return node.value;
-            default: throw new ICError('Unknown value type: '+node.type, this.filename, this.line());
-
+        var value = node.value
+        switch (value.type) {
+            case 'String':return e( ri(value.value, node.column));
+            case 'Number': return q(value.value);
+            case 'Code': return value.value;
+            default: throw new ICError('Unknown value type: '+value.type, this.filename, this.line());
         }
     }
 

@@ -47,8 +47,9 @@
 
   "dependencies": {
     "commander": "2.2.x",
+    "jsdom-little": "0.10.x",
     "html": "0.0.7",
-    "jsdom-little": "0.10.x"
+    "detect-indent": "0.1.3"
   },
 
   "devDependencies": {
