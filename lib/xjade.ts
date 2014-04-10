@@ -41,7 +41,12 @@ export function compile(filename: string, opts: XJadeOptions = {}) : string {
         Compiler = compilers[opts.compile];
     }
     else {
-        Compiler = require(opts.compile);
+        try {
+            Compiler = require(opts.compile);
+            console.log(Compiler);
+        } catch (e) {
+            throw new Error('Compiler not found: '+opts.compile);
+        }
     }
 
     var compiler = new Compiler(opts);
