@@ -155,17 +155,17 @@ class Compiler implements XJadeCompiler {
         this.templateLineOffset = node.body.line;
         this.currentLineOffset = 0;
         this.lastPrintedLineOffset = 0;
-
         this.elIndex = 0;
 
         try {
             var nodes = parserTemplate.parse(node.body.value);
         } catch (e) {
+            var line = this.templateLineOffset + e.line -1;
             var column = (e.line===1)
                 ? e.column + node.body.column
                 : e.column;
 
-            throw new ParserError(e.name, e.message, this.filename, e.line, column, e);
+            throw new ParserError(e.name, e.message, this.filename, line, column, e);
         }
 
         var args = node.args
