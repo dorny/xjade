@@ -1,7 +1,5 @@
 ## XJade Language Reference
 
-On this page:
-
 * [Template](#template)
 * [Tag](#tag)
   * [Tag Attributes](#tag-attributes)
@@ -237,8 +235,8 @@ This can be used especially for:
 * declare or manipulate variables
 
 Inside JavaScript block, you can use special `@el` variable.
-XJade will replace it with variable holding reference to current parent Node.
-  
+XJade will replace it with variable holding reference to current Node.
+
 #### Line
 Single line of JavaScript code starts with `-` and all code to the end of line will appear unchanged in generated function:
 

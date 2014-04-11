@@ -8,7 +8,9 @@
 XJade is a new template engine which accelerates and simplifies building complex dynamic user interfaces in JavaScript.
 
 
-XJade sytax is explained at: [**Language Reference**](LANGUAGE.md).
+Check it out:
+* [**What is new**](CHANGES.md)
+* [**Language Reference**](LANGUAGE.md)
 
 
 ##  Features
@@ -120,7 +122,7 @@ Developing firts prototype of XJade was supported by [MAINDATA](http://www.maind
 
 ### Jade
 [Jade](http://jade-lang.com/) was first template engine I have used.  
-This project started as try to fix Jade client side limitations. That's why it was named XJade.  
+This project started as try to fix Jade's client side limitations. That's why it was named XJade.  
 
 ### Other
 
