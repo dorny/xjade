@@ -1,6 +1,7 @@
 /// <reference path="d.ts/app.d.ts" />
 
 import config = require('./config');
+var splitcode = require('./parser/splitcode');
 var prettyPrint = require('html').prettyPrint;
 
 var _jsdom;
@@ -53,6 +54,16 @@ export function addIndent(str: string, indent, token) {
         return space+ln;
     }).join('\n');
 }
+
+export function replaceEl(code: string, elName: string) {
+    return splitcode.parse(code).map((part)=> {
+        if (part.type==='El')
+            return elName;
+        else
+            return part.value;
+    }).join('');
+}
+
 
 
 

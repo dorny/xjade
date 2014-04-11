@@ -11,12 +11,15 @@ module.exports = function(grunt) {
                     failOnError: true,
                     stdout: true,
             },
-            template: {
+            source: {
                 command: 'node_modules/pegjs/bin/pegjs lib/parser/source.pegjs',
             },
-            source: {
+            template: {
                 command: 'node_modules/pegjs/bin/pegjs lib/parser/template.pegjs',
             },
+            splitcode: {
+                command: 'node_modules/pegjs/bin/pegjs lib/parser/splitcode.pegjs',
+            }
         },
 
         ts: {
@@ -35,7 +38,7 @@ module.exports = function(grunt) {
 
         watch: {
             shell: {
-                files: ['lib/parser/source.pegjs','lib/parser/template.pegjs'],
+                files: ['lib/parser/source.pegjs','lib/parser/template.pegjs','lib/parser/splitcode.pegjs'],
                 tasks: ['shell'],
             },
             ts: {

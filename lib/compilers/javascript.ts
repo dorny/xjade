@@ -182,7 +182,8 @@ class Compiler implements XJadeCompiler {
     }
 
     private compileCode(node: XJadeValueNode, parent: string) {
-        this.append(ri(node.value, node.column));
+        var code = ri(node.value, node.column);
+        this.append( utils.replaceEl(code, parent));
     }
 
     private compileDirective(node: XJadeDirectiveNode, parent: string) {
