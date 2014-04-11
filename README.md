@@ -5,7 +5,10 @@
 
 # XJade - DOM Templating Engine
 
-XJade is a new template language which accelerates and simplifies building complex dynamic user interfaces in JavaScript.  
+XJade is a new template engine which accelerates and simplifies building complex dynamic user interfaces in JavaScript.
+
+
+XJade sytax is explained at: [**Language Reference**](LANGUAGE.md).
 
 
 ##  Features
@@ -15,49 +18,21 @@ XJade is a new template language which accelerates and simplifies building compl
 * **Client side performance** - see this [benchmark](http://jsperf.com/xjade-benchmarks). 
 * **Server side support** - Generate your static HTML files with XJade and never write HTML again.
 * **Easy integration** - works with AMD/CommonJS modules, TypeScript or any binding library.
-* **Simplicity** - It's only about CSS selectors syntax and JavaScript, not a whole new language. 
-* **Readable generated code** - Indented with mapping to original line numbers.
-
-
-## Table of Contents
-* [Why Use XJade?](#why-use-xjade)
-* [How to work with XJade?](#how-to-work-with-xjade)
-* [Instalation](#instalation)
-    * [Grunt plugin](#grunt-plugin-recommended)
-    * [IDE support](#ide-support)
-* [Syntax](#syntax)
-    * [Template](#template)
-    * [Tag](#tag)
-        * [Tag Attributes](#tag-attributes)
-        * [Conditional Classes](#conditional-classes)
-        * [Text](#text)
-        * [Child Tag](#child-tag)
-        * [Inline Tag](#inline-tag)
-        * [Nesting Tags and Text](#nesting-tags-and-text)
-    * [JavaScript Code](#javascript-code)
-        * [Line](#line)
-        * [Block](#block)
-    * [Comments](#comments)
-* [Server side usage](#server-side-usage)
-* [License](#license)
-* [Acknowledgements](#acknowledgements)
 
 
 ## Why Use XJade?
-
 * DOM API is too verbose.
-* HTML String concatenation is security hole and hard to read (no HTML syntax highlightig, no multiline strings, etc.).
-* jQuery or other libs are still verbose and messy if chain calls doesn't fit your logic.
-* Cloning prearranged node trees don't work well with conditions or when you need references to created nodes inside template.
-* Most other template engines with CSS like syntax:
-    * uses only string concatenation method
-    * conditionals, loops etc. uses their own special syntax instead of plain JavaScript
+* HTML String concatenation is error prone, possible security hole and hard to read (no HTML syntax highlightig, no multiline strings, etc.).
+* jQuery or other libs are still verbose and messy when you need more complex structure.
+* Cloning prearranged node trees doesn't work well with conditions or when you need references to created nodes inside template.
+* Most other template engines:
+    * uses either verbose HTML or weird custom syntax
+    * works with strings instead of direct DOM manipulation
     * uses mixins, partials, blocks and other own constructs instead of simple function calls
-    * force you to have only one template per file with limited options for module loading method.
+
 
 
 ## How to work with XJade?:
-
 1. Write your view code which dynamically generates DOM structures with XJade templates into .xjade files.
 1. Watch and compile your .xjade files with grunt.
 1. Use any module loader or plain script tags to include your compiled sources.
@@ -69,25 +44,23 @@ XJade is a new template language which accelerates and simplifies building compl
 
 ### Command line
 After installing the latest version of [node](http://nodejs.org/), install with:
-
 ```shell
 npm install -g xjade
 ```
 
 #### Usage:
-<pre>
+```
 Usage: xjade [options] [...files]
 
 Options:
 
   -h, --help             output usage information
   -V, --version          output the version number
-  -c, --compile &lt;kind&gt;   Specify compiler: 'js' (default), 'html' or 'ast'.
-  --doctype &lt;str&gt;        Specify doctype: '5' (default), 'strict', 'transitional', 'xhtml' or other.
-  --data &lt;str&gt;           Filename or string with input data input JSON format.
+  -c, --compile <kind>   Specify compiler: 'js' (default), 'html' or 'ast'.
+  --doctype <str>        Specify doctype: '5' (default), 'strict', 'transitional', 'xhtml' or other.
+  --data <str>           Filename or string with input data input JSON format.
   -p, --pretty           Print pretty HTML.
-
-</pre>
+```
 
 Command line version outputs compiled templates to it's standard output.
 To save your templates to file use [Redirection](http://en.wikipedia.org/wiki/Redirection_(computing)).
@@ -99,256 +72,6 @@ To save your templates to file use [Redirection](http://en.wikipedia.org/wiki/Re
 
 ### IDE support
 * [sublime-xjade](https://github.com/dorny/sublime-xjade) - Syntax highlighting and snippets for [Sublime Text](http://www.sublimetext.com/) editor.
-
-
-
-## Syntax
-
-### Template
-
-Templates are embedded into JavaScript as syntax extension. 
-All subsequent XJade grammar rules are applied only inside body of functions defined with this construct:
-
-```abnf
-function @template [templateName] ( [arguments] ) { [body] }
-```
-
-Xjade will translate template functions into regular JavaScript functions.
-Function argument list will be prepended by `parent` - which will be used as a root `Node` where subsequent nodes will be appended.
-
-Example:
-```
-exports.render = function @tempalte(arg1, arg2, argN) { /* body */ }
-```
-will be compiled to:  
-```
-exports.render = function (parent, arg1, arg2, argN) { /* body */ }
-```
-
-Example:
-```
-// You can also use template as class method in TypeScript:  
-class MyView {
-    public @template render() {
-        /* body */
-    }
-}
-```
-
-Reserved variable names inside template function:
-* `parent`: root element, where child nodes will be appended
-* `__el`: holds reference to lastly created element node
-* `__expr`: temporary expression result storage
-* names like: `div$1`: temporary references to created nodes
-
-When you call template function, first argument must be Node where child nodes will be appended.
-Template function does not clear its root node before starts processing.
-Function will return its root node unles you explicitly return something else.
-
-Example:
-```
-var render = @template (name) { … };
-var node = render( document.createElement('div'), 'Some name');
-```
-
-
-### Tag
-
-Syntax of tag statement is based on CSS selectors:  
-```
-    tagName #tagID .tagClasses* [ tagAttributes ]
-```
-
-Only one of the name, ID or classes must be specified, others are optional.
-White-spaces between name, ID and classes are not allowed.
-If tag name is omited, it defaults to `div`.
-
-Example:
-```
-div#my-id.class-1.class-2.class-n
-span.error.strong
-#header
-.container
-```
-
-#### Tag Attributes
-Tag attributes can be set inside square brackets `[ … ]`.
-Start brace must follow imediatelly after tag declaration (no white-spaces).
-Inside attributes block, you can use white-spaces and comments.
-Attribute is set using `name=value` syntax and individual attributes are delimited by one or more white-space characters.
-
-Value can be one of:
-* String - single or double quoted
-* Number - only positive integer
-* Expression - any JavaScript expression
-
-Example:
-```
-input[ name="username" type="text" ]
-span[ data-rating=5 ]
-a[ href=project.homepage ]
-span[ data-count=(user.count+1) ]
-```
-
-If attribute value is determined by JavaScript expression, attribute will be set only if expression evalutes to true.
-
-
-#### Conditional Classes
-It's possible to set specific class on tag only if some expression evaluates to true.
-Syntax for this is same as with attributes, except class name starts with ".".
-
-Example:
-```
-div[ .active=tab.active ]
-```
-
-
-
-#### Text
-Text nodes are created with:  
-* Single quotes
-* Double quotes
-* JavaScript expresion as `${ … }`
-* Tag text assignment as `tag= …`
-
-Don't worry about escaping HTML special chars, all text will be automatically escaped by DOM itself.
-You can also use any escape/unicode sequence exactly same way like in JavaScript.
-Quoted text can also span accross multiple lines.
-In that case, leading whitespaces up to the indentation level of text node itsef will be removed.
-
-Example:
-```
-'some text'
-"some other text"
-'text with newline character at the end \n'
-"multiline
- string
-"
-${user.name}
-div= user.name
-```
-
-#### Child Tag
-If tag has only one child tag, you can use shorthand inline syntax `parent > child`.
-Example:
-
-```
-li > a[href="#link1"] "Link 1"
-```
-
-
-#### Inline Tag
-Tag can be also created with inline syntax.
-It starts with: `#{` and ends with `}`.
-If you use this method, indentation parent/child rules as described bellow will not apply inside #{…}.
-
-Example:
-```
-div "click " #{ a[href="http://www.google.com"] "here"} " to go to www.google.com"
-```
-
-
-#### Nesting Tags and Text 
-Simply indent to put nested tags or text inside of a tag.
-You can indent with any number of spaces or tabs but do not mix them.
-
-Example:
-```
-html
-    head
-        script[ src="app.js" type="text/javascript" ]
-    body
-        #content
-            'Lorem ipsum'        
-```
-
-renders as:
-```html
-<html>
-    <head>
-        <script src="app.js" type="text/javascript"></script>
-    </head>
-    <body>
-        <div id="content">Lorem ipsum</div>        
-    </body>
-</html>
-```
-
-Multiple text nodes and inline child tags can be placed on a single line.
-These body elemenets can be either on the same line as their parent tag
-or on the following lines which are more indented as their parent tag.
-
-Example:
-```
-span "Lorem Ipsum " ${user.name} " Lorem Ipsum"
-
-div
-    "Lorem Ipsum " ${user.name}     " Lorem Ipsum"
-    "Lorem Ipsum " ${user.address}  " Lorem Ipsum"
-```
-
-
-### JavaScript Code
-
-XJade allows puting arbitrary JavaScript code inside templates.  
-This allows things like:
-* Controll flow - conditions, loops, etc.
-* Call to another template function
-* Store reference to created node
-* Declare or manipulate variables
-
-    
-#### Line
-Single line of JavaScript code starts with `-`.
-All code to the end of line will appear unchanged in generated function.
-
-Example:  
-```
-- if (user.isLoggedIn) {
-    div.welcome "Hi " ${user.name} "!"
-- } else {
-    div.login
-        input[ name="username" type="text"]
-        input[ name="password" type="password"]
-        button[ name="login" ]
-- }
-```
-
-Example:
-```
-ul
-    - users.forEach( function(user, i) {
-        li ${user.name}      
-    - });
-```
-
-**Important: ** Allways use `{` and `}` with conditions, single line tag statement may be translated to multiple lines of code.
-
-
-#### Block
-
-Multiline block with JavaScript code can be written inside curly brackets `{ … }`.
-
-Example:
-```
-function @template(clickHandler, exports) {
-    div
-        "Lorem Impsum"   
-        span
-        {
-            // `el` always holds reference to lastly created node.
-            el.onclick = clickHandler;
-            exports.span = el;
-        }
-}
-```
-
-### Comments
-
-* Single line: `// this is comment`
-* Single line HTML: //> this will be inserted as HTML comment
-* Block: `/* this is comment */` 
-* Block HTML: `/*> this will be inserted as HTML comment */`
 
 
 
@@ -365,15 +88,13 @@ Use cases:
 
 Example (index.xjade):
 ```
-var content = require('./content');
-
 exports.render = function @template () {
     html
         head
             script[src="app.js"]
             link[href="style.css" rel="stylesheet" type="text/css"]
         body
-            - content.render(el);
+            'This HTML was generated by XJade!'
 };
 ```
 
@@ -381,17 +102,6 @@ Generate pretty formated HTML with:
 ```
 xjade -c html -p index.xjade
 ```
-
-Do not use XJade templates as per request HTML generator, it was not designed for it.
-
-### How it works
- 
-XJade works on server side with emulated DOM API and serializes result document.
-For this purpose [jsdom-little](https://github.com/dorny/jsdom-little) is used.
-This allows single code base for client and server version, but it's slow compared to pure string generation.
-
-Templates are executed using node.js [vm.runInNewContext(…)](http://nodejs.org/api/vm.html#vm_vm_runinnewcontext_code_sandbox_filename)
-with injected `require(…)` function to process includes and global document variable for creating nodes.
 
 
 

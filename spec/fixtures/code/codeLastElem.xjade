@@ -1,6 +1,6 @@
 exports.render = function @template() {
     div
     {
-        el.textContent = "OK";
+        @el.textContent = "OK";
     }
 }

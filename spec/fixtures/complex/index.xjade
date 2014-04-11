@@ -44,7 +44,7 @@ exports.render = function @template () {
             .content
                 //> example of imported template
                 {
-                    part.table(el);
+                    part.table(@el);
                 }
 
             .content

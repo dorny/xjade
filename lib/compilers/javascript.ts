@@ -36,7 +36,6 @@ class Compiler implements XJadeCompiler {
     lastPrintedLineOffset;
 
     PARENT_TOKEN = 'parent';
-    EL_TOKEN = 'el';
     NEXT_EL_TOKEN = 'el$';
     EXPR_TOKEN = '__expr';
 
@@ -173,9 +172,9 @@ class Compiler implements XJadeCompiler {
             : '';
 
         this.buffer.push((node.name||'')+'('+this.PARENT_TOKEN+args+') {\n');
-        this.append(this.indentToken+'var '+this.EL_TOKEN+', '+this.EXPR_TOKEN+';');
+        this.append(this.indentToken+'var '+this.EXPR_TOKEN+';');
         this.compileChildren(nodes, this.PARENT_TOKEN);
-        this.append(this.indentToken+'return parent;');
+        this.append(this.indentToken+'return '+this.PARENT_TOKEN+';');
         this.append('}', true);
 
         this.templateLineOffset = 0;
@@ -227,11 +226,6 @@ class Compiler implements XJadeCompiler {
                 this.append('}');
                 break;
 
-            case 'While':
-                this.append('while ('+node.expr+') {')
-                this.compileChildren(node.children, parent);
-                this.append('}');
-
             case 'Switch':
                 this.append('switch ('+node.expr+') {')
                 this.compileChildren(node.children, parent);
@@ -252,7 +246,7 @@ class Compiler implements XJadeCompiler {
 
     private compileTag(tag: XJadeTagNode, parent: string) {
         var el = this.nextEl(tag.name);
-        this.append('var '+el+' = '+this.EL_TOKEN+' = document.createElement('+q(tag.name)+');');
+        this.append('var '+el+' = document.createElement('+q(tag.name)+');');
 
         if (tag.id) {
             this.append(el + '.id = ' + q(tag.id) + ';');

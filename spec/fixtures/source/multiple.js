@@ -3,14 +3,14 @@
 */
 
 var anonymous = function (parent) {
-  var el, __expr;
+  var __expr;
   return parent;
 }
 
 // som code
 
 function named(parent) {
-  var el, __expr;
+  var __expr;
   return parent;
 }
 
