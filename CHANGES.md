@@ -1,3 +1,7 @@
+### 0.2.1
+* Use new documentFragment if no parent node provided.
+* Bugfixes
+
 ### 0.2.0
 * Added [directives](LANGUAGE.md/#directives).
 * Better error reporting:
