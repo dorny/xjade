@@ -11,6 +11,7 @@ XJade is a new template engine which accelerates and simplifies building complex
 Check it out:
 * [**What is new**](CHANGES.md)
 * [**Language Reference**](LANGUAGE.md)
+* [***TODO list**](TODO.md)
 
 
 ##  Features
@@ -38,7 +39,7 @@ Check it out:
 1. Write your view code which dynamically generates DOM structures with XJade templates into .xjade files.
 1. Watch and compile your .xjade files with grunt.
 1. Use any module loader or plain script tags to include your compiled sources.
-1. Call compiled XJade functions with some root node as their first argument.
+1. Call compiled XJade functions with some root node or null as their first argument.
 
 
 

@@ -54,11 +54,13 @@ Reserved variable names inside template function:
 * `__expr`: temporary expression result storage
 * names like: `div$1`: temporary references to created nodes
 
-When you call template function, first argument must be Node where child nodes will be appended.
-Function will return its root node unles you explicitly return something else:
+When you call template function, first argument must be either Node where child nodes will be appended,
+or null and then new [documentFragment](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment) will be used.
+Function will return its parent unles you explicitly return something else:
 ```
 var render = @template (name) { … };
 var node = render( document.createElement('div'), 'Some name');
+var fragment = render( null, 'Some name');
 ```
 
 

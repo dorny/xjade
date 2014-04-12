@@ -208,7 +208,7 @@ class Compiler implements XJadeCompiler {
 
             case 'Each':
                 var tmp = this.nextEl(this.EXPR_TOKEN);
-                this.append(tmp+' = '+ node.expr+';');
+                this.append('var '+tmp+' = '+ node.expr+';');
                 var key = node.key || this.nextEl('i');
                 var len = this.nextEl('l');
                 this.append('for (var '+key+'=0, '+len+'='+tmp+'.length; '+key+'<'+len+'; ++'+key+') {')
@@ -219,7 +219,7 @@ class Compiler implements XJadeCompiler {
 
             case 'For':
                 var tmp = this.nextEl(this.EXPR_TOKEN);
-                this.append(tmp+' = '+ node.expr+';');
+                this.append('var '+tmp+' = '+ node.expr+';');
                 var key = node.key || this.nextEl('i');
                 this.append('for (var '+key+' in '+tmp+') {')
                 this.append(this.indentToken+'var '+node.value+' = '+tmp+'['+key+'];');
