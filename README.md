@@ -18,7 +18,7 @@ Check it out:
 * **Readable short-hand HTML** - XJade uses indented CSS selectors to describe node trees.
 * **Embedded into JavaScript** - Templates are written inside JavaScript files.
 * **DOM structure** - Elements are created using standard browser DOM API.
-* **Client side performance** - see this [benchmark](http://jsperf.com/xjade-benchmarks). 
+* **Client side performance** - see this [benchmark](http://jsperf.com/xjade-benchmarks/2). 
 * **Server side support** - Generate your static HTML files with XJade and never write HTML again.
 * **Easy integration** - works with AMD/CommonJS modules, TypeScript or any binding library.
 
