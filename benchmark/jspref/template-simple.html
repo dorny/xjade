@@ -1,0 +1,39 @@
+<div class="header">
+    <h1>Welcome to XJade performance benchmars!</h1>
+</div>
+<div id="content">
+    <h2>How about creating some elements?</h2>
+    <div>
+        <span>Lorem ipsum</span>
+        <span>Oh look! <a href="&quot;www.google.com&quot;">link</a> to Google!</span>
+    </div>
+    <div>How about some lists?
+        <% if (data.show) { %>
+            <ul>
+                <li><span>item</span>
+                </li><li><span>item</span></li>
+                <li><span>item</span></li>
+                <li><span>item</span></li>
+                <li><span>item</span></li>
+                <li><span>item</span></li>
+            </ul>
+        <% } %>
+    </div>
+    <div>How about tables?
+        <table>
+            <% data.items.forEach(function(item,i){ %>
+                <tr><td><%=i%></td><td><%=item%></td></tr>
+            <% }); %>
+        </table>
+    </div>
+    <div>How about forms?
+        <form>
+            <label>label</label><input name=<%=data.iname%> type="text">
+            <label>label</label><input name=<%=data.iname%> type="text">
+            <label>label</label><input name=<%=data.iname%> type="text">
+        </form>
+    </div>
+</div>
+<div class="footer">
+    <div>Thanks for testing</div>
+</div>
