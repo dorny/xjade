@@ -11,7 +11,7 @@ XJade is a new template engine which accelerates and simplifies building complex
 Check it out:
 * [**What is new**](CHANGES.md)
 * [**Language Reference**](LANGUAGE.md)
-* [***TODO list**](TODO.md)
+* [**TODO list**](TODO.md)
 
 
 ##  Features
