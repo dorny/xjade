@@ -17,7 +17,7 @@ describe('Source compilation', function(){
     it('should compile to empty render function', function(){
         var filename = fixture('empty.xjade');;
         var source = xjade.compile(filename, {compile:'js'});
-        expect(source).toEqual('function render(parent) {\n  var __expr;\n  return parent;\n}\n');
+        expect(source).toEqual('function render(parent) {\n  var __expr;\n  if (!parent) parent=document.createDocumentFragment();\n  return parent;\n}\n');
     });
 
     it('should compile multiple templates', function(){

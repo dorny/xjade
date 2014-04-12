@@ -11,22 +11,19 @@ describe('Code', function(){
 
     it('code block {...}', function(){
         var fn = eval(xjade.compile(fixture('codeBlock.xjade'), {compile: 'js'}));
-        var root = document.createDocumentFragment();
-        var result = fn(root);
+        var result = fn(null);
         expect(result).toEqual("OK");
     });
 
     it('codeLastElem', function(){
         var fn = eval(xjade.compile(fixture('codeLastElem.xjade'), {compile: 'js'}));
-        var root = document.createDocumentFragment();
-        fn(root);
+        var root = fn(null);
         expect(root.firstChild.textContent).toEqual('OK');
     });
 
     it('codeLine', function(){
         var fn = eval(xjade.compile(fixture('codeLine.xjade'), {compile: 'js'}));
-        var root = document.createDocumentFragment();
-        fn(root);
+        var root = fn(null);
         expect(root.firstChild.textContent).toEqual('OK');
     });
 });

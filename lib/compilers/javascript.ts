@@ -173,6 +173,7 @@ class Compiler implements XJadeCompiler {
 
         this.buffer.push((node.name||'')+'('+this.PARENT_TOKEN+args+') {\n');
         this.append(this.indentToken+'var '+this.EXPR_TOKEN+';');
+        this.append(this.indentToken+'if (!parent) parent=document.createDocumentFragment();')
         this.compileChildren(nodes, this.PARENT_TOKEN);
         this.append(this.indentToken+'return '+this.PARENT_TOKEN+';');
         this.append('}', true);

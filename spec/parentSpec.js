@@ -11,16 +11,14 @@ describe('Parent Tag', function(){
 
     it('should have body', function(){
         var fn = eval(xjade.compile(fixture('tagBody.xjade'), {compile: 'js'}));
-        var root = document.createDocumentFragment();
-        fn(root);
+        var root = fn(null);
         var div = root.firstChild;
         expect(div.childNodes.length).toEqual(1);
     });
 
     it('should have nested tags', function(){
         var fn = eval(xjade.compile(fixture('tagNested.xjade'), {compile: 'js'}));
-        var root = document.createDocumentFragment();
-        fn(root);
+        var root = fn(null);
         expect(root.childNodes.length).toEqual(2);
 
         var div1 = root.childNodes[0];

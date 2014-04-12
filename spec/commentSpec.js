@@ -11,30 +11,26 @@ describe('Comments', function(){
 
     it('multiline comment', function(){
         var fn = eval(xjade.compile(fixture('multiline.xjade'), {compile: 'js'}));
-        var root = document.createDocumentFragment();
-        fn(root);
+        var root = fn(null);
         expect(root.childNodes.length).toEqual(0);
     });
 
     it('multiline HTML comment', function(){
         var fn = eval(xjade.compile(fixture('multilineHTML.xjade'), {compile: 'js'}));
-        var root = document.createDocumentFragment();
-        fn(root);
+        var root = fn(null);
         expect(root.childNodes.length).toEqual(1);
         expect(root.firstChild.nodeType).toEqual(8);
     });
 
     it('singleline comment', function(){
         var fn = eval(xjade.compile(fixture('singleline.xjade'), {compile: 'js'}));
-        var root = document.createDocumentFragment();
-        fn(root);
+        var root = fn(null);
         expect(root.childNodes.length).toEqual(0);
     });
 
     it('singleline HTML comment', function(){
         var fn = eval(xjade.compile(fixture('singlelineHTML.xjade'), {compile: 'js'}));
-        var root = document.createDocumentFragment();
-        fn(root);
+        var root = fn(null);
         expect(root.childNodes.length).toEqual(1);
         expect(root.firstChild.nodeType).toEqual(8);
     });
