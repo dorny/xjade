@@ -1,3 +1,0 @@
-exports.render = function @template(id, name) {
-    div[ id=(id) data-name=(name) ]
-}

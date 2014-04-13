@@ -1,3 +1,17 @@
-exports.render = function @template() {
-    input[id="some-id" class="class" name="name" value="value" data-custom="custom" data-fail=(false) hidden]
+exports =  {
+    novalue: function @template () {
+        div[ data-ok]
+    },
+
+    value: function @template () {
+        div[ data-ok="ok"]
+    },
+
+    property: function @template () {
+        div[ .id="ok" ]
+    },
+
+    classExpr: function @template () {
+        div[  class("class-ok") class("class-true")=true class("fail")=false ]
+    },
 }

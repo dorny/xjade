@@ -173,7 +173,7 @@ class Compiler implements XJadeCompiler {
 
         this.buffer.push((node.name||'')+'('+this.PARENT_TOKEN+args+') {\n');
         this.append(this.indentToken+'var '+this.EXPR_TOKEN+';');
-        this.append(this.indentToken+'if (!parent) parent=document.createDocumentFragment();')
+        this.append(this.indentToken+'if (parent==null) parent=document.createDocumentFragment();')
         this.compileChildren(nodes, this.PARENT_TOKEN);
         this.append(this.indentToken+'return '+this.PARENT_TOKEN+';');
         this.append('}', true);
@@ -253,38 +253,52 @@ class Compiler implements XJadeCompiler {
             this.append(el + '.id = ' + q(tag.id) + ';');
         }
 
-        var classes =  q(tag.classes.join(' '));
-        tag.conditionalClasses.forEach((cls)=> {
-            classes+= '+('+this.escapeValue(cls)+' && '+q(' '+cls.name)+' || "")'
-        });
-
-        if (classes!==q('')) {
-            this.append(el + '.className = ' + classes +';');
-        }
-
+        this.compileTagClasses(tag, el);
         this.compileTagAttribues(tag.attributes, el);
         this.compileChildren(tag.children, el, true);
         this.append(parent+'.appendChild('+el+');');
     }
 
-    private compileTagAttribues(attributes: XJadeTagAttribute[], el: string) {
-        attributes.forEach((attr) => {
-            var name = attr.name.toLowerCase();
+    private compileTagClasses(tag: XJadeTagNode, el: string) {
+        var classes =  q(tag.classes.join(' '));
 
-            if (attr.value===null) {
-                this.append(el+'.setAttribute(' + q(name)+','+q(name)+');');
-            }
-            else if (name in config.directAttrs) {
-                if (attr.value.type==='Code')
-                    this.append('if ('+this.EXPR_TOKEN+'= '+this.escapeValue(attr)+') '+el+'.'+config.directAttrs[name]+' = '+this.EXPR_TOKEN+';');
-                else
-                    this.append(el+'.'+config.directAttrs[name]+' = '+this.escapeValue(attr)+';');
-            }
-            else {
-                if (attr.value.type==='Code')
-                    this.append('if ('+this.EXPR_TOKEN+'= '+this.escapeValue(attr)+') '+el+'.setAttribute(' + q(name)+', ' + this.EXPR_TOKEN+');');
-                else
-                    this.append(el+'.setAttribute(' + q(name)+', ' +  this.escapeValue(attr) + ');');
+        tag.classExprs.forEach((expr)=> {
+            if (expr.value)
+                classes+= '+('+this.escapeValue(expr.value)+' && (" "+'+this.escapeValue(expr.name)+') || "")';
+            else
+                classes+= '+'+this.escapeValue(expr.name);
+        });
+
+        if (classes!==q('')) {
+            this.append(el + '.className = ' + classes +';');
+        }
+    }
+
+    private compileTagAttribues(attributes, el: string) {
+        attributes.forEach((attr) => {
+
+            switch (attr.type) {
+                case 'Comment':
+                    this.compileComment(attr, el);
+                    break;
+
+                case 'TagProperty':
+                    if (attr.onlyTrue)
+                        this.append('if ('+this.EXPR_TOKEN+'= '+this.escapeValue(attr.value)+') '+el+'.'+attr.name+' = '+this.EXPR_TOKEN+';');
+                    else
+                        this.append(el+'.'+attr.name+' = '+this.escapeValue(attr.value)+';');
+                    break;
+
+                case 'TagAttribute':
+                    var value = attr.value? this.escapeValue(attr.value) : q(attr.name);
+                    if (attr.onlyTrue)
+                        this.append('if ('+this.EXPR_TOKEN+'= '+value+') '+el+'.setAttribute(' + q(attr.name)+', ' + this.EXPR_TOKEN+');');
+                    else
+                        this.append(el+'.setAttribute('+q(attr.name)+', '+value+');');
+                    break;
+
+                default:
+                    throw new ICError("Unknown TagAttribute type: "+attr.type, this.filename, this.line(), null);
             }
         });
     }
@@ -294,7 +308,7 @@ class Compiler implements XJadeCompiler {
         // set textContent rather ten appending text node (speed optimizaiton)
         if (isSafeParent && children.length===1 && children[0].type==='Text') {
             var child = <XJadeValueNode> children[0];
-            this.append(parent+'.textContent = '+this.escapeValue(child)+';');
+            this.append(parent+'.textContent = '+this.escapeValue(child.value)+';');
         }
         else {
             this.indent++;
@@ -304,7 +318,7 @@ class Compiler implements XJadeCompiler {
     }
 
     private compileText(node: XJadeValueNode, parent: string) {
-        this.append(parent+'.appendChild( document.createTextNode('+this.escapeValue(node)+'));');
+        this.append(parent+'.appendChild( document.createTextNode('+this.escapeValue(node.value, node.column)+'));');
     }
 
     private compileComment(node: XJadeCommentNode, parent: string) {
@@ -316,13 +330,20 @@ class Compiler implements XJadeCompiler {
         }
     }
 
-    private escapeValue(node: XJadeValueNode) {
-        var value = node.value
-        switch (value.type) {
-            case 'String':return e( ri(value.value, node.column));
-            case 'Number': return q(value.value);
-            case 'Code': return value.value;
-            default: throw new ICError('Unknown value type: '+value.type, this.filename, this.line());
+    private escapeValue(node: XJadeValueNode, removeIndent?: number) {
+        switch (node.type) {
+            case 'String':
+                return removeIndent != null
+                    ? e( ri(node.value, removeIndent))
+                    : e(node.value);
+
+            case 'Number':
+                return q(node.value);
+
+            case 'Code':
+                return node.value;
+
+            default: throw new ICError('Unknown value type: '+node.type, this.filename, this.line());
         }
     }
 
@@ -342,7 +363,7 @@ class Compiler implements XJadeCompiler {
     }
 
     private concatText(children) {
-        var code = children.map((text)=> this.escapeValue(text));
+        var code = children.map((text)=> this.escapeValue(text.value, text.column));
 
         var result = children[0];
         result.value.type = 'Code';

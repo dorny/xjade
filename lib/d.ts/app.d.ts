@@ -43,13 +43,18 @@ interface XJadeTagNode extends XJadeNode {
 	name: string;
 	id?: string;
 	classes: string[];
-	conditionalClasses: XJadeTagAttribute[];
-	attributes: XJadeTagAttribute[];
+	classExprs: XJadeClassExpression[];
+	attributes: any[];
 	children: XJadeNode[];
 }
 
 interface XJadeTagAttribute extends XJadeValueNode {
 	name: string;
+	onlyTrue: boolean;
+}
+
+interface XJadeClassExpression extends XJadeValueNode {
+	name: XJadeValueNode;
 }
 
 interface XJadeCommentNode extends XJadeValueNode {

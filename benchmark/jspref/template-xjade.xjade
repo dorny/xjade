@@ -7,7 +7,7 @@ window.tpl.xjade = function @template (self) {
         h2 'How about creating some elements?'
         div
             span 'Lorem ipsum'
-            span 'Oh look! ' #{a[href="www.google.com"] 'link'} ' to Google!'
+            span 'Oh look! ' #{a[.href="www.google.com"] 'link'} ' to Google!'
         div
             'How about some lists?'
             @if self.show
@@ -30,13 +30,13 @@ window.tpl.xjade = function @template (self) {
             'How about forms?'
             form
                 label 'label'
-                input[name=self.iname type="text"]
+                input[ .name=self.iname .type="text"]
 
                 label 'label'
-                input[name=self.iname type="text"]
+                input[ .name=self.iname .type="text"]
 
                 label 'label'
-                input[name=self.iname type="text"]
+                input[ .name=self.iname .type="text"]
 
     .footer
         div 'Thanks for testing'

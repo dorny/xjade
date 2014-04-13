@@ -4,7 +4,7 @@
 
 var anonymous = function (parent) {
   var __expr;
-  if (!parent) parent=document.createDocumentFragment();
+  if (parent==null) parent=document.createDocumentFragment();
   return parent;
 }
 
@@ -12,7 +12,7 @@ var anonymous = function (parent) {
 
 function named(parent) {
   var __expr;
-  if (!parent) parent=document.createDocumentFragment();
+  if (parent==null) parent=document.createDocumentFragment();
   return parent;
 }
 
