@@ -4,7 +4,7 @@ exports =  {
     },
 
     value: function @template () {
-        div[ data-ok="ok"]
+        div[ data-ok="ok" data-true?="true" data-false?=false]
     },
 
     property: function @template () {
@@ -12,6 +12,7 @@ exports =  {
     },
 
     classExpr: function @template () {
-        div[  class("class-ok") class("class-true")=true class("fail")=false ]
+        div[class("class-ok") class("class-true")=true class("fail")=false ]
+
     },
 }

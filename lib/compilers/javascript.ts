@@ -264,9 +264,9 @@ class Compiler implements XJadeCompiler {
 
         tag.classExprs.forEach((expr)=> {
             if (expr.value)
-                classes+= '+('+this.escapeValue(expr.value)+' && (" "+'+this.escapeValue(expr.name)+') || "")';
+                classes+= '+('+expr.value+' && (" "+'+expr.name+') || "")';
             else
-                classes+= '+'+this.escapeValue(expr.name);
+                classes+= '+'+expr.name;
         });
 
         if (classes!==q('')) {
@@ -284,13 +284,13 @@ class Compiler implements XJadeCompiler {
 
                 case 'TagProperty':
                     if (attr.onlyTrue)
-                        this.append('if ('+this.EXPR_TOKEN+'= '+this.escapeValue(attr.value)+') '+el+'.'+attr.name+' = '+this.EXPR_TOKEN+';');
+                        this.append('if ('+this.EXPR_TOKEN+'= '+attr.value+') '+el+'.'+attr.name+' = '+this.EXPR_TOKEN+';');
                     else
-                        this.append(el+'.'+attr.name+' = '+this.escapeValue(attr.value)+';');
+                        this.append(el+'.'+attr.name+' = '+attr.value+';');
                     break;
 
                 case 'TagAttribute':
-                    var value = attr.value? this.escapeValue(attr.value) : q(attr.name);
+                    var value = attr.value || q(attr.name);
                     if (attr.onlyTrue)
                         this.append('if ('+this.EXPR_TOKEN+'= '+value+') '+el+'.setAttribute(' + q(attr.name)+', ' + this.EXPR_TOKEN+');');
                     else

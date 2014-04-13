@@ -49,6 +49,8 @@ describe('Tags', function(){
 
         root = templates.value(null);
         expect(root.firstChild.getAttribute('data-ok')).toEqual('ok');
+        expect(root.firstChild.getAttribute('data-true')).toEqual('true');
+        expect(root.firstChild.hasAttribute('data-false')).toBe(false);
 
         root = templates.property(null);
         expect(root.firstChild.id).toEqual('ok');

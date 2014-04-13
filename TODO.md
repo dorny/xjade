@@ -4,3 +4,4 @@
 1. Make fancy representative website.
 1. Write more tests.
 1. Write examples and tutorials.
+1. Write CodeMirror plugin.
