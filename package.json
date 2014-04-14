@@ -1,7 +1,7 @@
 {
   "name": "xjade",
 
-  "version": "0.3.1",
+  "version": "0.3.2",
 
   "description": "XJade template engine",
 
@@ -42,7 +42,7 @@
   },
 
   "scripts": {
-    "test": "grunt && node_modules/jasmine-node/bin/jasmine-node spec"
+    "test": "grunt && jasmine-node spec"
   },
 
   "dependencies": {
@@ -55,13 +55,11 @@
   "devDependencies": {
     "typescript": "1.0.0",
     "grunt": "0.4.x",
-    "grunt-cli": "0.1.x",
     "grunt-contrib-clean": "0.4.x",
     "grunt-contrib-watch": "0.4.x",
     "grunt-ts": "1.10.x",
     "pegjs": "0.8.x",
-    "grunt-shell": "0.6.x",
-    "jasmine-node": "1.14.x"
+    "grunt-shell": "0.6.x"
   }
 
 }
