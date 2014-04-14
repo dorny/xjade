@@ -3,12 +3,17 @@
 
 **WARNING - THIS PROJECT IS AT AN EARLY DEVELOPMENT STAGE**
 
-# XJade - DOM Templating Engine
+# XJade - HTML DOM Templating Engine
 
-XJade is a new template engine which accelerates and simplifies building complex dynamic user interfaces in JavaScript.
+XJade is a new template engine which accelerates and simplifies building complex dynamic web interfaces in JavaScript.
 Write your GUI templates in nice shorthand declarative way and let XJade do the hard work for you.
+
 XJade will generate well optimized code which uses native DOM methods like createElement(), setAttribute() or appendChild()
-to build parts of your GUI directly in client browser.
+to build parts of your GUI directly in client browser. Templates are compiled as a part of your build process and client will receive only generated code.
+
+If you are developing a fat client, single page application or just need to generate HTML view of your data,
+XJade will save your time and make your code more maintainable.
+
 
 Check it out:
 * [**What is new**](CHANGES.md)
@@ -21,7 +26,7 @@ Check it out:
 * **Readable short-hand HTML** - XJade uses indented CSS selectors to describe node trees.
 * **Embedded into JavaScript** - Templates are written inside anotated JavaScript functions.
 * **DOM structure** - Elements are created using standard native DOM API.
-* **Client side performance** - super fast on Chrome! See this [benchmark](http://jsperf.com/xjade-benchmarks/2) for more info. 
+* **Client side performance** - super fast on Chrome! See this [benchmark](http://jsperf.com/xjade-benchmarks/2) for more info.
 * **Server side support** - Generate your static HTML files with XJade and never write HTML again.
 * **Easy integration** - works with AMD/CommonJS modules, TypeScript or any binding library.
 
