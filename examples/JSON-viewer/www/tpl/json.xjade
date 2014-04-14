@@ -1,0 +1,52 @@
+/*
+ * Copyright (c) 2014 Michal Dorner
+ * Licensed under the MIT license.
+ *
+ */
+
+// This is actually not optimal use case of XJade.
+// There is not much markup in compare to JavaScript logic,
+// so take this as pure educational example.
+
+
+define(function (require, exports) {
+
+    exports.render = function @template render(obj) {
+
+        @switch (typeof obj)
+
+            @case 'object'
+                @if (Array.isArray(obj))
+                    "["
+                        ul.array
+                            @each item, i in obj
+                                li
+                                    div.value
+                                        - render(@el,item);
+
+                                        @if (i<obj.length-1)
+                                            ','
+                    "]"
+                @else
+                    "{"
+                        ul.object
+                            - var keys = Object.keys(obj);
+                            @each key, i in keys
+                                li
+                                    span.key '"' ${key} '": '
+                                    - render(@el,obj[key]);
+
+                                    @if (i<keys.length-1)
+                                        ','
+                    "}"
+
+            @case 'string'
+                span.string '"' ${obj} '"'
+
+            @case 'number'
+                span.number ${obj}
+
+            @case 'boolean'
+                span.boolean ${obj}
+    };
+});

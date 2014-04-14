@@ -1,0 +1,58 @@
+/*
+ * xjade-example
+ * https://github.com/dorny/xjade-example
+ *
+ * Copyright (c) 2014 Michal Dorner
+ * Licensed under the MIT license.
+ */
+
+html, body {
+	height: 100%;
+	margin: 0px;
+}
+
+.block-2 {
+	margin-top: 10px;
+	float: left;
+	width: 50%;
+	height: 90%;
+}
+
+.t-center {
+	text-align: center;
+}
+
+#input {
+	width: 90%;
+	height: 80%;
+}
+
+#button {
+	width: 200px;
+	height: 40px;
+	font-size: 16px;
+}
+
+
+#json-view {
+	border: 1px solid #ccc;
+	padding: 5px;
+	overflow-y: auto;
+	max-height: 90%;
+	font-family: monospace;
+}
+
+ul.object, ul.array {
+	list-style-type: none;
+	padding-left: 20px;
+	margin: 0;
+}
+
+span.string {
+	color: #a11;
+}
+
+span.number,
+span.boolean {
+	color: #164;
+}
