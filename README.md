@@ -6,19 +6,21 @@
 # XJade - HTML DOM Templating Engine
 
 XJade is a new template engine which accelerates and simplifies building complex dynamic web interfaces in JavaScript.
-Write your GUI templates in nice shorthand declarative way and let XJade do the hard work for you.
+Write your GUI templates in shorthand declarative way and let XJade do the hard work for you.
 
 XJade will generate well optimized code which uses native DOM methods like createElement(), setAttribute() or appendChild()
 to build parts of your GUI directly in client browser. Templates are compiled as a part of your build process and client will receive only generated code.
 
 If you are developing a fat client, single page application or just need to generate HTML view of your data,
 XJade will save your time and make your code more maintainable.
+Take a look at this simple example [screenshot](https://db.tt/pqShaziz) from real project.
 
 
 Check it out:
 * [**What is new**](CHANGES.md)
 * [**Language Reference**](LANGUAGE.md)
 * [**TODO list**](TODO.md)
+
 
 
 
