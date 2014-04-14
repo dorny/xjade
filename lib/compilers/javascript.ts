@@ -235,8 +235,15 @@ class Compiler implements XJadeCompiler {
 
             case 'Case':
                 this.append('case '+node.expr+':');
+                if (node.children.length>0) {
+                    this.compileChildren(node.children, parent);
+                    this.append(this.indentToken+'break;');
+                }
+                break;
+
+            case 'Default':
+                this.append('default:');
                 this.compileChildren(node.children, parent);
-                this.append(this.indentToken+'break;');
                 break;
 
             default:

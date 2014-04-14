@@ -190,6 +190,9 @@ XJade's swtich syntax is in parallel with JavaScript's switch statement and take
 
     @case 'user'
       a[href="/profile"] Profile
+
+    @default
+       "some default content"
 ```
 
 
