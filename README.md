@@ -1,7 +1,8 @@
-[![Build Status](https://travis-ci.org/dorny/xjade.png?branch=master)](https://travis-ci.org/dorny/xjade)
-[![Dependency Status](https://gemnasium.com/dorny/xjade.png)](https://gemnasium.com/dorny/xjade)
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 
-**WARNING - THIS PROJECT IS AT AN EARLY DEVELOPMENT STAGE**
+**[DEPRECATED] - Look instead at [React](https://facebook.github.io/react/)**
+
+It was a fun to implement this, but now there are other significantly better solutions.
 
 # XJade - HTML DOM Templating Engine
 
